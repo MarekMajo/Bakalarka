@@ -1,0 +1,149 @@
+{% extends "menu.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}">
+{% endblock %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="buttons-container" style="justify-content: center">
+    <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
+    <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
+    <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
+    <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
+    <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+</div>
+<div class="zoznam">
+    <div class="controls-container">
+        <label>
+                <select onchange="filterRights()" class="rights-selector">
+                    <option value="All">All</option>
+                    <option value="None">None</option>
+                    {% for right in role %}
+                        <option value="{{ right[0] }}">{{ right[0] }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        <div class="search-container">
+            <label>
+                <input type="text" onkeyup="searchFunction()" placeholder="Search for names.." class="search-input">
+            </label>
+        </div>
+        <div class="buttons-container">
+            <button id="addUserButton" class="button">Pridať Užívateľa</button>
+            <button id="del" class="button">Odstrániť Užívateľov</button>
+            <button id="role" class="button">Zmeniť rolu</button>
+        </div>
+    </div>
+    <div class="table-container">
+        <table class="table">
+        <thead>
+            <tr>
+                <th class="box"></th>
+                <th class="id-column">#</th>
+                <th>Meno a priezvisko</th>
+                <th class="pohlavie">Pohlavie</th>
+                <th>Email</th>
+                <th>Tel číso</th>
+                <th>Práva</th>
+                <th>Akcie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for uzivatel in uzivatelia %}
+            <tr>
+                <td><label>
+                    <input class="box" type="checkbox" name="selectedUsers" value="{{ uzivatel[0] }}">
+                </label></td>
+                <td class="id-column">{{ uzivatel[0] }}</td>
+                <td>{{ uzivatel[1] }} {{ uzivatel[2] }}</td>
+                <td>{{ uzivatel[3] }}</td>
+                <td>{{ uzivatel[4] }}</td>
+                <td>{{ uzivatel[5] }}</td>
+                <td>{{ uzivatel[6] }}</td>
+                <td>
+                    <button class="editButton">Edit</button>
+                    <button class="delButton">Delete</button>
+                    <button class="pravaButton">Práva</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+<div id="delsModal" class="modal">
+    <div class="modal-content">
+        Nauzaj chcete odstrániť tíchto uživateľov?
+        <a class="delsModalclose">X</a>
+        <button id="delsButton">Vymazať</button>
+    </div>
+</div>
+
+    <div id="delModal" class="modal">
+        <div class="modal-content">
+            Nauzaj chcete odstrániť tíchto uživateľov?
+            <a class="delModalclose">X</a>
+            <button id="delButton">Vymazať</button>
+        </div>
+    </div>
+
+<div id="editModal" class="modal">
+        <div class="modal-content">
+            <a class="editModalclose">X</a>
+            <input type="text" id="editfilterInput"  onkeyup="editfilterList()" placeholder="Search for names...">
+            <button id="editsubmitButton">Ulož</button>
+            <ul id="editselectList"></ul>
+        </div>
+    </div>
+
+<div id="editallModal" class="modal">
+        <div class="modal-content">
+            <a class="editallModalclose">X</a>
+            <input type="text" id="editallfilterInput"  onkeyup="editfilterList()" placeholder="Search for names...">
+            <button id="editallsubmitButton">Ulož</button>
+            <ul id="editallselectList"></ul>
+        </div>
+    </div>
+<form id="addUserForm">
+    <div id="addUserModal" class="modal">
+        <div class="modal-content" style="width: 40%">
+            <span class="addModalclose">X</span>
+            <div class="profile-info">
+                <div class="info">
+                    <label for="RodCislo"><strong>Rod číslo:</strong></label>
+                    <input type="text" id="RodCislo" name="rodCislo" required pattern="\d{10}" title="Rodné číslo musí obsahovať 10 čísel.">
+                </div>
+                <div class="info">
+                    <label for="Meno"><strong>Meno:</strong></label>
+                    <input type="text" id="Meno" name="meno" required>
+                </div>
+                <div class="info">
+                    <label for="Priezvisko"><strong>Priezvisko:</strong></label>
+                    <input type="text" id="Priezvisko" name="priezvisko" required>
+                </div>
+                <div class="info">
+                    <label for="Pohlavie"><strong>Pohlavie:</strong></label>
+                    <select id="Pohlavie" name="pohlavie">
+                        <option value="Muž">Muž</option>
+                        <option value="Žena">Žena</option>
+                        <option value="Neurčené" selected>Neurčené</option>
+                    </select>
+                </div>
+                <div class="info">
+                    <label for="Email"><strong>Email:</strong></label>
+                    <input type="email" id="Email" name="email" required>
+                </div>
+                <div class="info">
+                    <label for="Adresa"><strong>Adresa:</strong></label>
+                    <input type="text" id="Adresa" name="adresa">
+                </div>
+                <div class="info">
+                    <label for="TelCislo"><strong>Tel číslo:</strong></label>
+                    <input type="text" id="TelCislo" name="tel_cislo">
+                </div>
+                <button type="submit" class="button" id="saveUserButton">Uložiť</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{{ url_for('static', filename='javascript/zoznam.js') }}"></script>
+{% endblock %}

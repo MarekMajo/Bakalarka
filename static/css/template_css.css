@@ -1,0 +1,158 @@
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #8ECEC0;
+    padding: 10px;
+}
+
+.top-bar .container {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.top-bar .bar1, .top-bar .bar2, .top-bar .bar3 {
+    width: 35px;
+    height: 5px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.top-bar .change .bar1 {
+    transform: translate(0, 11px) rotate(-45deg);
+}
+
+.top-bar .change .bar2 {
+    opacity: 0;
+}
+
+.top-bar .change .bar3 {
+    transform: translate(0, -11px) rotate(45deg);
+}
+
+.dropdown {
+    display: flex;
+    position: absolute;
+    right: 20px;
+}
+
+.dropdownYear {
+    display: flex;
+    position: absolute;
+    right: 150px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #8ECEC0;
+    min-width: 160px;
+    z-index: 1;
+    margin-top: 35px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #8ECEC0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+.dropdown-sidebar {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn-sidebar {
+    padding: 8px 8px 8px 32px;
+    font-size: 25px;
+    display: inline-block;
+    border: none;
+    background-color: #8ECEC0;
+    color: black;
+    cursor: pointer;
+    z-index: 0;
+}
+
+.dropdown-content-sidebar {
+    display: none;
+    position: fixed;
+    /*left: 100%;
+    top: 0;*/
+    left: 0; /* Zmena na 0 */
+    top: 110px;
+    background-color: #8ECEC0;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    margin-left: 130px;
+    z-index: 1;
+}
+
+.dropdown-content-sidebar a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+}
+
+.dropdown-content-sidebar a:hover {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.dropdown-sidebar:hover .dropdown-content-sidebar {
+    display: block;
+}
+#zvolenýRok {
+    border-style: solid;
+    border-color: black;
+    flex-wrap: wrap;
+    background-color: #8ECEC0;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-left: 5px;
+    flex: 0 1 auto;
+    margin-right: 5px;
+    font-size: 16px;
+}
+.imge{
+    /*margin-right: 750px;*/
+    margin: auto;
+}

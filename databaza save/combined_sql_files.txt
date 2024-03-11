@@ -1,0 +1,705 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+create table asistent_predmety
+(
+    asistent_id       int         null,
+    predmet_id        int         not null,
+    skolsky_rok_nazov varchar(45) null,
+    constraint asistent_predmety_osoba_osoba_id_fk
+        foreign key (asistent_id) references osoba (osoba_id),
+    constraint asistent_predmety_predmety_predmet_id_fk
+        foreign key (predmet_id) references predmety (predmet_id)
+);
+
+create table dochadzka
+(
+    dochadzka_id    int auto_increment
+        primary key,
+    datum           date        not null,
+    typ_chybania    varchar(45) not null,
+    ziak_id         int         not null,
+    predmet_id      int         not null,
+    skolsky_rok_id  int         not null,
+    ospravedlnienka tinyint     null,
+    constraint dochadzka_ibfk_1
+        foreign key (ziak_id) references osoba (osoba_id),
+    constraint dochadzka_ibfk_2
+        foreign key (predmet_id) references predmety (predmet_id),
+    constraint dochadzka_ibfk_3
+        foreign key (skolsky_rok_id) references skolske_roky (skolsky_rok_id)
+);
+
+create index predmet_id
+    on dochadzka (predmet_id);
+
+create index skolsky_rok_id
+    on dochadzka (skolsky_rok_id);
+
+create index ziak_id
+    on dochadzka (ziak_id);
+
+
+
+create table opravnenia
+(
+    opravnenie_id int auto_increment
+        primary key,
+    nazov         varchar(45)  not null,
+    kategoria     varchar(255) null
+);
+
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Zobraz pozicie', 'Pozicie');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Nahranie Fotky', 'Profil');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Edit Osoba info', 'Profil');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Vymazanie Profilovky', 'Profil');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Zoznam pouzivatelov', 'Zoznam pouzivatelov');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Edit Prihlasovacie Udaje', 'Profil');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Zobraz pokus', 'Pozicie');
+
+
+create table opravnenia_pozicie
+(
+    pozicia_id    int not null,
+    Opravnenia_id int not null,
+    constraint opravnenia_pozicie_ibfk_1
+        foreign key (pozicia_id) references pozicie (pozicia_id),
+    constraint opravnenia_pozicie_ibfk_2
+        foreign key (Opravnenia_id) references opravnenia (opravnenie_id)
+);
+
+create index Opravnenia_id
+    on opravnenia_pozicie (Opravnenia_id);
+
+create index pozicia_id
+    on opravnenia_pozicie (pozicia_id);
+
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 1);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 3);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 5);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 7);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 3);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 5);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (3, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (3, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (3, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (7, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (7, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (7, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 1);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 3);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 5);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 7);
+
+
+create table osoba
+(
+    osoba_id   int auto_increment
+        primary key,
+    meno       varchar(45)  not null,
+    priezvisko varchar(45)  not null,
+    rod_cislo  varchar(10)  not null,
+    Pohlavie   varchar(255) null,
+    bydlisko   varchar(255) null,
+    telefon    varchar(45)  null,
+    email      varchar(255) null,
+    pozicia_id int          null,
+    constraint osoba_ibfk_1
+        foreign key (pozicia_id) references pozicie (pozicia_id)
+);
+
+create index pozicia_id
+    on osoba (pozicia_id);
+
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Marek', 'Tvrdošinský', '1234567890', null, null, null, 'marekmajo25@gmail.com', 1);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('William', 'Gross', '731512225', 'Muž', 'Podzáhradná 386, 017 46 Matovce', '+421 2 38321308', 'tylernorton@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Erin', 'Holder', '639405914', 'Muž', 'Mlynarovičova 6, 013 31 Kiarov', '+421 913 616 925', 'palmershawn@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Chloe', 'Mills', '940611501', 'Žena', 'Rybničná 17, 930 55 Voderady', '+421 913 970 252', 'blakeamy@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lori', 'Randall', '986637142', 'Neurčené', 'Bartoňova 6, 066 32 Pavlice', '+421 2 51436779', 'johnkelley@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lisa', 'Adams', '357432798', 'Žena', 'Hríbová 2, 842 73 Torysky', '+421 949 255 608', 'gomezgary@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Michael', 'Cox', '644164105', 'Neurčené', 'Župné námestie 5, 949 38 Zlaté', '+421 36 466 5714', 'ghansen@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Courtney', 'James', '815147727', 'Žena', 'Buková 7, 051 32 Hlboké', '+421 52 147 8990', 'edwardsjessica@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('James', 'Ferguson', '740361090', 'Muž', 'Družstevná 13, 997 81 Okrúhle', '+421 940 241 639', 'bradleybradley@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Melissa', 'Duarte', '951368619', 'Muž', 'Konopná 11, 882 05 Korňa', '+421 944 757 756', 'mcarter@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Albert', 'Montgomery', '275916123', 'Žena', 'Prievozská 95, 812 25 Veľká Čierna', '+421 909 986 235', 'rogersisaac@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Marcus', 'Solis', '323836635', 'Neurčené', 'Tománkova 18, 040 48 Točnica', '+421 36 981 0797', 'jenniferwallace@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Aaron', 'Harris', '980660301', 'Muž', 'Klariská 9, 827 79 Trhovište', '+421 944 331 025', 'markgarner@inmail.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Kimberly', 'Ramsey', '520568624', 'Neurčené', 'Toryská 314, 950 25 Solčany', '+421 912 302 351', 'bgarcia@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Charles', 'Velez', '093000107', 'Žena', 'Brnianska 6, 805 78 Čierny Potok', '+421 948 717 165', 'preed@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Brian', 'Lyons', '682861687', 'Neurčené', 'Svätého Vincenta 83, 961 08 Jastrabie nad Topľou', '+421 38 252 5294', 'melissa09@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Destiny', 'Clark', '907393947', 'Muž', 'K horárskej studni 8, 894 82 Senné', '+421 918 469 554', 'matthewtrevino@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Nicholas', 'Hayes', '685646166', 'Muž', 'Janáčkova 496, 820 65 Kurov', '+421 949 052 708', 'carolhowell@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Jason', 'Barrett', '363149068', 'Žena', 'Macharova 65, 932 11 Skačany', '+421 948 814 484', 'mckinneyjesus@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Alejandra', 'Smith', '695177958', 'Žena', 'Jamnického 664, 998 42 Zubné', '+421 949 625 025', 'jsmith@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Michelle', 'Clark', '674696861', 'Neurčené', 'Čipkárska 7, 035 91 Bardejov', '+421 44 381 4022', 'ashlee97@centrum.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Emily', 'Cain', '597475150', 'Neurčené', 'Senická 437, 911 00 Bobrovník', '+421 940 542 097', 'dan39@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Adam', 'Smith', '442210702', 'Žena', 'Kubínska 5, 065 02 Lozorno', '+421 948 821 722', 'harrisamy@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Martha', 'Cross', '031063454', 'Neurčené', 'Lachova 23, 057 84 Ižkovce', '+421 35 601 9539', 'haroldthompson@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Timothy', 'Hill', '293884686', 'Neurčené', 'Korabinského 6, 001 30 Plavecký Štvrtok', '+421 919 454 713', 'davissandra@inmail.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lisa', 'Torres', '056226789', 'Žena', 'Čaklovská 972, 861 40 Andovce', '+421 39 954 8920', 'dhenry@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Deborah', 'Ferrell', '941621001', 'Neurčené', 'Skalická cesta 855, 974 85 Mučín', '+421 949 908 840', 'gomezpaul@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Scott', 'Woodard', '367903830', 'Muž', 'Nevädzová 948, 061 42 Martin nad Žitavou', '+421 944 312 250', 'rojasashley@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lisa', 'Black', '541178265', 'Neurčené', 'Karloveské rameno 75, 038 82 Nižný Kručov', '+421 48 479 3950', 'hoganerik@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Ralph', 'Trujillo', '530602967', 'Muž', 'Bučinová 297, 871 81 Veľké Blahovo', '+421 948 916 626', 'slopez@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Charles', 'Rollins', '554982162', 'Muž', 'Čiližská 76, 994 15 Liptovská Štiavnica', '+421 944 660 386', 'heatherrich@inmail.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Krystal', 'Bennett', '277220757', 'Neurčené', 'Rožňavská 7, 836 53 Poľný Kesov', '+421 42 612 0436', 'ashleyjimenez@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('David', 'Mullins', '675617649', 'Muž', 'Podunajská 1, 907 97 Petrova Ves', '+421 940 001 967', 'rodriguezcole@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('William', 'Gibson', '760137662', 'Neurčené', 'Karloveské rameno 67, 070 12 Vislava', '+421 49 470 6222', 'miguel61@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Stephanie', 'Bowen', '017875801', 'Muž', 'Na úvrati 74, 954 04 Tehla', '+421 2 53583441', 'travisthompson@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Eric', 'Marquez', '585932997', 'Neurčené', 'Jegnešská 548, 814 30 Dubnička', '+421 944 911 352', 'michaelrios@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Alexandra', 'Frey', '620973003', 'Muž', 'Nad lomom 85, 915 41 Gemerček', '+421 50 931 1462', 'sparksterri@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Dawn', 'Pierce', '278123889', 'Neurčené', 'Hrušovská 2, 915 56 Baška', '+421 948 304 782', 'graveszachary@inmail.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('William', 'Hopkins', '015037333', 'Žena', 'Malokarpatské námest 993, 960 64 Podhradík', '+421 49 589 8842', 'nathanielgarcia@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Patrick', 'Cowan', '145319741', 'Žena', 'Rajtákova 30, 850 07 Helcmanovce', '+421 949 663 782', 'triciamoyer@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Rebecca', 'Williams', '047851061', 'Neurčené', 'Zbrody 971, 086 21 Súlovce', '+421 948 035 196', 'ashleybrown@centrum.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Julie', 'Brown', '954136434', 'Žena', 'Palisády 19, 921 58 Čerenčany', '+421 904 924 717', 'psalas@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Alexandra', 'Reed', '531104673', 'Muž', 'Na kaštieli 4, 973 66 Visolaje', '+421 2 86881114', 'ksmith@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Chad', 'Pierce', '998749462', 'Neurčené', 'Kaplinská 6, 911 05 Ráztoka', '+421 948 176 933', 'icampbell@inmail.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Nicole', 'Christensen', '963413376', 'Muž', 'Ďumbierska 14, 950 66 Čelovce', '+421 903 065 599', 'girwin@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Elizabeth', 'Walker', '448056983', 'Neurčené', 'Stará Vajnorská 170, 072 43 Beňuš', '+421 915 348 054', 'qwilson@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Brenda', 'Mitchell', '896965224', 'Žena', 'Tomášikova 589, 911 00 Muľa', '+421 916 076 568', 'angela02@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Jennifer', 'Harvey', '128102255', 'Žena', 'Poštová 72, 968 65 Podhradík', '+421 948 270 495', 'zadams@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Eugene', 'Mckenzie', '311439412', 'Žena', 'Púchovská 3, 028 52 Čechy', '+421 904 330 481', 'hwhite@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Benjamin', 'Allen', '844931877', 'Žena', 'Mozartova 766, 008 83 Hrabské', '+421 949 468 074', 'cooperemily@centrum.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Hannah', 'Perry', '095781221', 'Muž', 'Bajkalská 23, 889 08 Nižná Rybnica', '+421 918 598 449', 'osbornalicia@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Jackson', 'Olson', '368723674', 'Muž', 'Svíbová 2, 872 23 Ratnovce', '+421 43 162 7773', 'thomasnicole@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Kelly', 'George', '567049332', 'Žena', 'Beňovského 78, 830 85 Záborie', '+421 39 829 2601', 'mrobinson@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Derek', 'Hudson', '308743709', 'Žena', 'Čajkovského 2, 874 16 Čierne Kľačany', '+421 911 958 439', 'imartinez@zoznam.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Michael', 'Barron', '960267327', 'Neurčené', 'Pod Kobylou 6, 050 61 Povoda', '+421 42 975 8962', 'hsmith@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Jessica', 'Fields', '150617721', 'Žena', 'Brodská 20, 003 27 Mýtna', '+421 915 414 082', 'tony63@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Terry', 'Jordan', '883849773', 'Neurčené', 'Vajnorská 640, 814 35 Jakušovce', '+421 909 746 401', 'qriddle@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Ashley', 'Smith', '399654106', 'Žena', 'Sumbalova 234, 900 27 Vlachovo', '+421 949 176 607', 'bethanyponce@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Kimberly', 'Shaw', '635948284', 'Žena', 'Dolné Koruny 28, 013 03 Malá Ida', '+421 30 402 9981', 'ericmartinez@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Patrick', 'Mitchell', '153323417', 'Muž', 'Vajnorská 5, 062 64 Selce', '+421 2 43310945', 'brian75@zoznam.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Laura', 'Wilkerson', '523302169', 'Muž', 'Gabčíkova 281, 098 38 Lošonec', '+421 57 307 4145', 'johnhoffman@zoznam.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Vanessa', 'Oconnor', '781806285', 'Žena', 'Galvaniho 9, 098 41 Leľa', '+421 40 643 3494', 'iwilkins@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Hannah', 'Hernandez', '027692204', 'Žena', 'Margarétková 66, 931 23 Herľany', '+421 948 899 907', 'nguyenmichael@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Bradley', 'Barrett', '416662178', 'Muž', 'Benediktiho 20, 918 48 Turecká', '+421 39 217 1209', 'joelcole@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Taylor', 'Harmon', '452504312', 'Neurčené', 'Morušova 18, 086 10 Smrečany', '+421 949 008 670', 'stephensgeorge@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('James', 'Gonzalez', '659684739', 'Neurčené', 'Rašelinová 38, 991 81 Kvašov', '+421 944 077 278', 'jonesandrea@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Guy', 'Grant', '945886758', 'Žena', 'Pod Strážami 3, 971 28 Bošany', '+421 948 491 857', 'pauljoshua@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('John', 'Thomas', '864360195', 'Neurčené', 'Prvosienková 77, 937 19 Dolný Štál', '+421 55 608 4657', 'jtaylor@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Gregory', 'Mcdaniel', '876131639', 'Žena', 'Jurovského 3, 997 58 Uzovské Pekľany', '+421 52 441 9415', 'julia65@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Chelsea', 'Wilkins', '845116683', 'Neurčené', 'Estónska 44, 996 50 Trebostovo', '+421 906 301 966', 'mday@zoznam.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Richard', 'Blake', '696049332', 'Neurčené', 'Na rozhliadke 39, 969 70 Rákoš', '+421 944 699 416', 'isanders@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Amanda', 'Alvarado', '995274564', 'Neurčené', 'Chlumeckého 8, 958 20 Hrlica', '+421 944 162 400', 'evanstaylor@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Summer', 'Hamilton', '992516689', 'Neurčené', 'Jantárová 3, 094 84 Nechválova Polianka', '+421 914 849 991', 'dennis03@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Mary', 'Rodriguez', '617365879', 'Žena', 'Furdekova 3, 850 50 Čermany', '+421 2 46322034', 'ucastillo@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Martin', 'Logan', '756963900', 'Žena', 'Harmanecká 249, 014 58 Pušovce', '+421 948 915 306', 'robertjones@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Madeline', 'Bass', '670524088', 'Neurčené', 'Sosnová 322, 017 16 Miloslavov', '+421 944 897 678', 'jessica66@zoznam.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Charles', 'Mcdonald', '060528259', 'Žena', 'Iľjušinova 56, 913 79 Kvačany', '+421 49 365 8982', 'jimenezsierra@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Samantha', 'Mathews', '335293639', 'Neurčené', 'Matúšova 8, 976 41 Varhaňovce', '+421 56 854 4688', 'benjaminharrington@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Karen', 'Scott', '642873293', 'Muž', 'Landererova 75, 977 73 Hanušovce nad Topľou', '+421 49 482 2607', 'destinyarnold@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Brenda', 'Hancock', '546985978', 'Muž', 'Anenská 59, 059 05 Stožok', '+421 948 898 854', 'browntina@centrum.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Catherine', 'Huffman', '429463688', 'Žena', 'Stará vinárska 18, 927 50 Nižný Hrabovec', '+421 944 119 735', 'eduncan@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Cynthia', 'Mora', '776204684', 'Muž', 'Horná 407, 845 44 Omastiná', '+421 54 168 0505', 'baileykristen@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Andrew', 'Collins', '678240783', 'Neurčené', 'Kamilková 2, 918 35 Vasiľov', '+421 940 877 312', 'ubenjamin@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Ralph', 'Grant', '701215256', 'Žena', 'Tvarožkova 77, 049 13 Nýrovce', '+421 909 119 917', 'sandramitchell@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Tiffany', 'Bell', '636606909', 'Žena', 'Miletičova 93, 800 84 Kamanová', '+421 56 845 6791', 'thomascourtney@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Stephanie', 'Walker', '243322054', 'Žena', 'Tranovského 361, 907 67 Horné Semerovce', '+421 917 137 753', 'shirleynunez@chello.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Scott', 'Jimenez', '131438463', 'Muž', 'Cyprichova 8, 027 40 Hôrka', '+421 948 824 325', 'christinetaylor@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Roy', 'French', '417958376', 'Neurčené', 'Zlaté piesky 66, 932 81 Koválov', '+421 949 325 958', 'alexandradyer@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Jordan', 'Lang', '160357310', 'Neurčené', 'Albrechtova 714, 842 00 Zemné', '+421 906 962 916', 'rayjose@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Brian', 'Ross', '913197818', 'Neurčené', 'Námestie Andreja Hli 4, 091 57 Oľšavce', '+421 940 564 686', 'mccormickandrea@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Joshua', 'Rogers', '452695456', 'Neurčené', 'Janáčkova 9, 993 44 Chotín', '+421 40 142 8431', 'emclaughlin@post.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Matthew', 'Espinoza', '033704812', 'Neurčené', 'Poľná 11, 005 44 Jelenec', '+421 949 576 113', 'hopkinsmary@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Heidi', 'Johnson', '467880595', 'Neurčené', 'Skalná 90, 952 80 Dedinky', '+421 32 665 4550', 'ebrown@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('John', 'Bradford', '420163676', 'Neurčené', 'Oriešková 66, 994 93 Dvorec', '+421 948 764 155', 'tproctor@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Cristian', 'Mcbride', '604660244', 'Muž', 'Súkennícka 31, 990 16 Hontianske Nemce', '+421 51 319 8776', 'patricia49@zoznam.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Barbara', 'Myers', '687257506', 'Žena', 'Bachova 5, 907 79 Dolný Bar', '+421 940 552 163', 'heathertaylor@szm.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Robert', 'Gates', '496470028', 'Neurčené', 'Za Kasárňou 599, 812 48 Hajtovka', '+421 948 964 049', 'robertsshaun@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Eric', 'Moran', '477566860', 'Muž', 'Bodrocká 3, 870 31 Súdovce', '+421 940 608 368', 'xmanning@atlas.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Kara', 'Willis', '045300726', 'Muž', 'Saratovská 188, 095 34 Bátorove Kosihy', '+421 948 246 256', 'tyler71@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lisa', 'Grant', '982869083', 'Žena', 'Žihľavová 87, 068 09 Veľké Kršteňany', '+421 40 090 4517', 'romerojustin@gmail.com', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Christopher', 'Howell', '741391122', 'Neurčené', 'Gruzínska 7, 954 46 Dubovec', '+421 940 314 969', 'jessicafischer@azet.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Šimon', 'Suchanovský', '9876543210', 'Muž', null, null, 'Simon.suchanovsky@gmail.com', 5);
+
+
+create table pozicie
+(
+    pozicia_id int auto_increment
+        primary key,
+    nazov      varchar(45) not null
+);
+
+INSERT INTO pokus.pozicie (nazov) VALUES ('Admin');
+INSERT INTO pokus.pozicie (nazov) VALUES ('Ucitel');
+INSERT INTO pokus.pozicie (nazov) VALUES ('Rodič');
+INSERT INTO pokus.pozicie (nazov) VALUES ('Žiak');
+INSERT INTO pokus.pozicie (nazov) VALUES ('Co-admin');
+
+
+create table predmety
+(
+    predmet_id        int auto_increment
+        primary key,
+    zoznam_predmet_id int         null,
+    rocnik_id         int         null,
+    skolsky_rok_nazov varchar(45) not null,
+    constraint predmety_ibfk_1
+        foreign key (zoznam_predmet_id) references zoznam_predmetov (zoznam_predmet_id),
+    constraint predmety_ibfk_2
+        foreign key (rocnik_id) references rocniky (rocnik_id)
+);
+
+create index rocnik_id
+    on predmety (rocnik_id);
+
+create index zoznam_predmet_id
+    on predmety (zoznam_predmet_id);
+
+create table predmety_ucebne
+(
+    predmet_id        int         not null,
+    ucebna_id         int         null,
+    skolsky_rok_nazov varchar(45) null,
+    constraint predmety_ucebne_ibfk_1
+        foreign key (predmet_id) references predmety (predmet_id),
+    constraint predmety_ucebne_ibfk_2
+        foreign key (ucebna_id) references ucebne (ucebna_id)
+);
+
+create index predmet_id
+    on predmety_ucebne (predmet_id);
+
+create index ucebna_id
+    on predmety_ucebne (ucebna_id);
+
+
+create table prihlasovacie_udaje
+(
+    login_id int         not null
+        primary key,
+    pr_meno  varchar(45) not null,
+    pr_heslo varchar(45) not null,
+    constraint prihlasovacie_udaje_ibfk_1
+        foreign key (login_id) references osoba (osoba_id)
+);
+
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (1, 'admin', 'admin');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (2, 'gross', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (3, 'holder', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (4, 'mills', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (5, 'randall', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (6, 'adams', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (7, 'cox', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (8, 'james', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (9, 'ferguson', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (10, 'duarte', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (11, 'montgomery', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (12, 'solis', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (13, 'harris', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (14, 'ramsey', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (15, 'velez', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (16, 'lyons', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (17, 'clark', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (18, 'hayes', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (19, 'barrett', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (20, 'smith', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (21, 'clark2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (22, 'cain', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (23, 'smith2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (24, 'cross', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (25, 'hill', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (26, 'torres', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (27, 'ferrell', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (28, 'woodard', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (29, 'black', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (30, 'trujillo', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (31, 'rollins', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (32, 'bennett', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (33, 'mullins', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (34, 'gibson', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (35, 'bowen', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (36, 'marquez', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (37, 'frey', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (38, 'pierce', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (39, 'hopkins', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (40, 'cowan', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (41, 'williams', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (42, 'brown', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (43, 'reed', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (44, 'pierce2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (45, 'christensen', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (46, 'walker', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (47, 'mitchell', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (48, 'harvey', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (49, 'mckenzie', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (50, 'allen', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (51, 'perry', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (52, 'olson', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (53, 'george', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (54, 'hudson', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (55, 'barron', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (56, 'fields', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (57, 'jordan', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (58, 'smith3', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (59, 'shaw', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (60, 'mitchell2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (61, 'wilkerson', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (62, 'oconnor', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (63, 'hernandez', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (64, 'barrett2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (65, 'harmon', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (66, 'gonzalez', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (67, 'grant', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (68, 'thomas', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (69, 'mcdaniel', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (70, 'wilkins', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (71, 'blake', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (72, 'alvarado', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (73, 'hamilton', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (74, 'rodriguez', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (75, 'logan', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (76, 'bass', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (77, 'mcdonald', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (78, 'mathews', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (79, 'scott', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (80, 'hancock', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (81, 'huffman', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (82, 'mora', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (83, 'collins', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (84, 'grant2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (85, 'bell', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (86, 'walker2', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (87, 'jimenez', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (88, 'french', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (89, 'lang', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (90, 'ross', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (91, 'rogers', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (92, 'espinoza', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (93, 'johnson', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (94, 'bradford', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (95, 'mcbride', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (96, 'myers', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (97, 'gates', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (98, 'moran', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (99, 'willis', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (100, 'grant3', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (101, 'howell', '123');
+INSERT INTO pokus.prihlasovacie_udaje (login_id, pr_meno, pr_heslo) VALUES (102, 'Suchanovský', '123');
+
+
+create table rocniky
+(
+    rocnik_id         int auto_increment
+        primary key,
+    nazov             varchar(45) not null,
+    skolsky_rok_nazov varchar(45) not null
+);
+
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('1', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('2', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('3', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('4', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('5', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('6', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('7', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('8', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('9', '2023/2024');
+INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('1', '2022/2023');
+
+
+create table rocnik_osoba
+(
+    rocnik_id int not null,
+    osoba_id  int null,
+    constraint rocnik_osoba_osoba_osoba_id_fk
+        foreign key (osoba_id) references osoba (osoba_id),
+    constraint rocnik_osoba_rocniky_rocnik_id_fk
+        foreign key (rocnik_id) references rocniky (rocnik_id)
+);
+
+
+
+create table rozvrhy
+(
+    rozvrh_id      int auto_increment
+        primary key,
+    den_v_tyzdni   int not null,
+    block          int not null,
+    trieda_id      int null,
+    predmet_id     int not null,
+    ucebna_id      int null,
+    skolsky_rok_id int not null,
+    constraint rozvrhy_ibfk_1
+        foreign key (trieda_id) references triedy (trieda_id),
+    constraint rozvrhy_ibfk_2
+        foreign key (predmet_id) references predmety (predmet_id),
+    constraint rozvrhy_ibfk_3
+        foreign key (ucebna_id) references ucebne (ucebna_id),
+    constraint rozvrhy_ibfk_4
+        foreign key (skolsky_rok_id) references skolske_roky (skolsky_rok_id)
+);
+
+create index predmet_id
+    on rozvrhy (predmet_id);
+
+create index skolsky_rok_id
+    on rozvrhy (skolsky_rok_id);
+
+create index trieda_id
+    on rozvrhy (trieda_id);
+
+create index ucebna_id
+    on rozvrhy (ucebna_id);
+
+
+create table skolske_roky
+(
+    skolsky_rok_id int auto_increment
+        primary key,
+    nazov          varchar(45) not null,
+    polrok         tinyint     not null,
+    zaciatok_roku  date        not null,
+    koniec_roku    date        not null
+);
+
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2022/2023', 0, '2022-09-05', '2023-01-31');
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2022/2023', 1, '2023-02-01', '2023-06-30');
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2023/2024', 0, '2023-09-04', '2024-01-31');
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2023/2024', 1, '2024-02-01', '2024-06-30');
+
+
+create table trieda_rocniky
+(
+    trieda_id int null,
+    rocnik_id int null,
+    constraint trieda_rocniky_rocniky_rocnik_id_fk
+        foreign key (rocnik_id) references rocniky (rocnik_id),
+    constraint trieda_rocniky_triedy_trieda_id_fk
+        foreign key (trieda_id) references triedy (trieda_id)
+);
+
+
+
+create table triedne_knihy
+(
+    trieda_kniha_id int auto_increment
+        primary key,
+    datum           date not null,
+    trieda_id       int  not null,
+    predmet_id      int  not null,
+    constraint triedne_knihy_ibfk_1
+        foreign key (trieda_id) references triedy (trieda_id),
+    constraint triedne_knihy_ibfk_2
+        foreign key (predmet_id) references predmety (predmet_id)
+);
+
+create index predmet_id
+    on triedne_knihy (predmet_id);
+
+create index trieda_id
+    on triedne_knihy (trieda_id);
+
+
+
+create table triedy
+(
+    trieda_id      int auto_increment
+        primary key,
+    nazov          varchar(45) not null,
+    triedny_id     int         null,
+    skolsky_rok_id varchar(45) null,
+    constraint triedy_ibfk_1
+        foreign key (triedny_id) references osoba (osoba_id)
+);
+
+create index triedny_id
+    on triedy (triedny_id);
+
+create index triedy_skolske_roky_skolsky_rok_id_fk
+    on triedy (skolsky_rok_id);
+
+
+
+create table ucebne
+(
+    ucebna_id int auto_increment
+        primary key,
+    nazov     varchar(255) not null,
+    skratka   varchar(10)  null
+);
+
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('1T', '1T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('2T', '2T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('3T', '3T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('4T', '4T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('5T', '5T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('6T', '6T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('7T', '7T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('8T', '8T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('9T', '9T');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Počitačová učebňa', 'POČ');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Telesná 1', 'TV1');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Telesná 2', 'TV2');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Prírodovedná učebňa', 'PRIR');
+INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Jazyková učebňa', 'JAZ');
+
+
+create table ucebne_plany
+(
+    uc_plan_id int auto_increment
+        primary key,
+    nazov      varchar(45) not null,
+    predmet_id int         not null,
+    constraint ucebne_plany_ibfk_1
+        foreign key (predmet_id) references predmety (predmet_id)
+);
+
+create index predmet_id
+    on ucebne_plany (predmet_id);
+
+
+
+create table ucebne_podplany
+(
+    uc_podplan_id  int auto_increment
+        primary key,
+    uc_plan_id     int         not null,
+    nazov          varchar(45) not null,
+    pocet_hodin    int         not null,
+    oducene_hodiny int         null,
+    constraint ucebne_podplany_ibfk_1
+        foreign key (uc_plan_id) references ucebne_plany (uc_plan_id)
+);
+
+create index uc_plan_id
+    on ucebne_podplany (uc_plan_id);
+
+
+
+create table ucebne_triedy
+(
+    ucebna_id int null,
+    trieda_id int null,
+    constraint ucebne_triedy_triedy_trieda_id_fk
+        foreign key (trieda_id) references triedy (trieda_id),
+    constraint ucebne_triedy_ucebne_ucebna_id_fk
+        foreign key (ucebna_id) references ucebne (ucebna_id)
+);
+
+
+
+create table ucitel_predmety
+(
+    ucitel_id         int         null,
+    predmet_id        int         not null,
+    skolsky_rok_nazov varchar(45) null,
+    constraint ucitel_predmety_ibfk_1
+        foreign key (ucitel_id) references osoba (osoba_id),
+    constraint ucitel_predmety_ibfk_2
+        foreign key (predmet_id) references predmety (predmet_id)
+);
+
+create index predmet_id
+    on ucitel_predmety (predmet_id);
+
+create index ucitel_id
+    on ucitel_predmety (ucitel_id);
+
+
+
+create table ziak_predmety
+(
+    ziak_id    int null,
+    predmet_id int null,
+    constraint ziak_predmety_osoba_osoba_id_fk
+        foreign key (ziak_id) references osoba (osoba_id),
+    constraint ziak_predmety_predmety_predmet_id_fk
+        foreign key (predmet_id) references predmety (predmet_id)
+);
+
+
+
+create table ziak_trieda
+(
+    ziak_id   int not null,
+    trieda_id int not null,
+    constraint ziak_trieda_osoba_osoba_id_fk
+        foreign key (ziak_id) references osoba (osoba_id),
+    constraint ziak_trieda_triedy_trieda_id_fk
+        foreign key (trieda_id) references triedy (trieda_id)
+);
+
+
+
+create table znamky
+(
+    znamka_id      int auto_increment
+        primary key,
+    znamka         varchar(45) not null,
+    max_hodnota    varchar(45) null,
+    vaha           float       null,
+    ziak_id        int         not null,
+    predmet_id     int         not null,
+    ucitel_id      int         not null,
+    skolsky_rok_id int         not null,
+    podpis         tinyint     not null,
+    constraint znamky_ibfk_1
+        foreign key (ziak_id) references osoba (osoba_id),
+    constraint znamky_ibfk_2
+        foreign key (predmet_id) references predmety (predmet_id),
+    constraint znamky_ibfk_3
+        foreign key (ucitel_id) references osoba (osoba_id),
+    constraint znamky_ibfk_4
+        foreign key (skolsky_rok_id) references skolske_roky (skolsky_rok_id)
+);
+
+create index predmet_id
+    on znamky (predmet_id);
+
+create index skolsky_rok_id
+    on znamky (skolsky_rok_id);
+
+create index ucitel_id
+    on znamky (ucitel_id);
+
+create index ziak_id
+    on znamky (ziak_id);
+
+
+
+create table zoznam_predmetov
+(
+    zoznam_predmet_id int auto_increment
+        primary key,
+    nazov             varchar(255) not null,
+    skratka           varchar(10)  null
+);
+
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Slovenský jazyk a literatúra', 'SJL');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Matematika', 'MAT');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Výtvarná výchova', 'VYV');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Telesná a športová výchova', 'TSV');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Etická výchova', 'ETV');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Hudobná výchova', 'HUV');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Prvouka', 'PVO');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Anglický jazyk hrou', 'AHR');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Náboženská výchova', 'NBV');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Anglický jazyk ', 'ANJ');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Prírodoveda', 'PDA');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Informatika', 'INF');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Regionálna výchova', 'RGV');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Vlastiveda', 'VLA');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Pracovné vyučovanie', 'PVC');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Biológia', 'BIO');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Technika', 'THD');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Geografia', 'GEG');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Dejepis', 'DEJ');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Občianska náuka', 'OBN');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Fyzika', 'FYZ');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Chémia', 'CHE');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Ruský jazyk', 'RUJ');
+INSERT INTO pokus.zoznam_predmetov (nazov, skratka) VALUES ('Nemecký jazyk', 'NEJ');
+
+
+SET FOREIGN_KEY_CHECKS = 1;

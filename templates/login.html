@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Login.css') }}">
+    <title>Prihlásenie</title>
+
+</head>
+<body>
+<div class="Login">
+    <h1>Prihlásenie</h1>
+    <form action="/login" method="POST">
+        <img src="static/images/logo.png" class="img" alt="logo.png">
+        <label for="username">Meno:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Heslo:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Prihlásiť sa">
+    </form>
+    <a href="/reset">Zabudnute heslo</a>
+    {% if error %}
+    <p style="color: red;">Zlé prihlasovacie údaje. Skúste to znova.</p>
+    {% endif %}
+    </div>
+</body>
+</html>
+

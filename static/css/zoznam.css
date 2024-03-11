@@ -1,0 +1,257 @@
+@media screen and (min-resolution: 120dpi) {
+    body {
+        font-size: 1.1rem;
+    }
+
+    .container {
+        width: 95%;
+    }
+}
+
+
+.controls-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .search-container, .buttons-container {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 10px;
+    }
+    .search-container {
+        padding: 5px;
+        justify-content: flex-start;
+    }
+    .buttons-container {
+        justify-content: flex-end;
+    }
+    .search-input {
+        width: 50%;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-color: #73bdad;
+        background-color: white;
+        color: black;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+    .search-input:focus {
+        outline: none;
+    }
+    .zoznam {
+        width: 80%;
+        margin: auto;
+    }
+    .table-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    }
+    .table, .modal-table {
+        width: 100%;
+        margin-top: 5px;
+        border-collapse: separate;
+        table-layout: fixed;
+    }
+    th, td {
+        text-align: left;
+        padding: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .id-column {
+        width: 2%;
+    }
+    .box {
+        width: 11px;
+    }
+    .delsModalclose, .delModalclose, .addModalclose, .addSkolskyRokModalclose,
+    .addPredmetclose, .vyberVyucujuceho_Ucebnuclose, .vyberPredmetovclose,
+    .addUcebnuclose,.vyberTriedny_Ziaciclose, .addUcebnuclose, .addRocnikModalclose
+    ,.vyberZiaciclose, .delRocnikModalclose, .delUcebnuModalclose, .kopirkaModalclose, .EditRozvrhclose
+    ,.EditKategorieclose, .AddKategoriuclose, .SetVyhodnoteniaclose {
+        color: #000;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        cursor: pointer;
+    }
+    .modal {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 20%;
+    }
+    .modal-content-Kategorie {
+        position: relative;
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%;
+    }
+    .modal-content-Rozvrh {
+        position: relative;
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 70%;
+    }
+    .modal-content-vyhodnotenie {
+        position: relative;
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 30%;
+    }
+    .profile-info {
+    flex: 1;
+  }
+  .profile-info h2 {
+    color: #333;
+    font-size: 24px;
+  }
+  .profile-info .info {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+  }
+  .button, .rights-selector {
+      background-color: #73bdad;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      margin-left: 5px;
+      flex: 0 1 auto;
+      margin-right: 5px;
+      font-size: 16px;
+  }
+
+#editselectList li, #editallselectList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#editselectList li a, #editallselectList li a {
+    flex-grow: 1;
+    font-weight: bold;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input[type="radio"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input[type="radio"]:checked + .slider {
+    background-color: #73bdad;
+}
+
+input[type="radio"]:checked + .slider::before {
+    transform: translateX(26px);
+}
+#vyberVyucujuceho_Ucebnu .modal, #vyberPredmetov .modal, #vyberTriedny_Ziaci .modal, #vyberZiaci .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+#vyberVyucujuceho_Ucebnu .modal-content, #vyberPredmetov .modal-content, #vyberTriedny_Ziaci .modal-content, #vyberZiaci .modal-content {
+    width: 700px;
+    height: 700px;
+    overflow-y: auto;
+    margin: auto;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+#vyberVyucujuceho_Ucebnu .table-modal-container, #vyberPredmetov .table-modal-container, #vyberTriedny_Ziaci .table-modal-container, #vyberZiaci .table-modal-container{
+    max-height: calc(85%);
+    overflow-y: auto;
+}
+
+#vyberVyucujuceho_Ucebnu .buttons-container, #vyberPredmetov .buttons-container, #vyberTriedny_Ziaci .buttons-container, #vyberZiaci .buttons-container {
+    margin-top: auto;
+}
+#vyberVyucujuceho_Ucebnu .id-column, #vyberPredmetov .id-column, #vyberTriedny_Ziaci .id-column, #vyberZiaci .id-column{
+    width: 10%;
+}
+.selection-container {
+    display: flex;
+    gap: 10px;
+}

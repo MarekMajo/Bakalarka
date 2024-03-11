@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="27b6bf39-f5dd-4dd7-8654-a2ad37c5ad13" name="Changes" comment="7.1.2024&#10;Opravený error s databázou. Každá komunikácia s Databázou musí mať vlasný connect, inak sú errori.">
+      <change beforePath="$PROJECT_DIR$/.idea/Práca.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Práca.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Flask.py" beforeDir="false" afterPath="$PROJECT_DIR$/Flask.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Init.py" beforeDir="false" afterPath="$PROJECT_DIR$/Init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pozicie_Flask.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pozicie_Flask.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Profil_Flask.py" beforeDir="false" afterPath="$PROJECT_DIR$/Profil_Flask.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQL.py" beforeDir="false" afterPath="$PROJECT_DIR$/SQL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/Profilovky/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/Profilovky/2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/Login.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/Login.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/Pozicie.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/Pozicie.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/javascript/Pozicie.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/javascript/Pozicie.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/javascript/menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/javascript/menu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Pozicie.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Pozicie.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/editProfil.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/editProfil.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/profil.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profil.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tokens.py" beforeDir="false" afterPath="$PROJECT_DIR$/tokens.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTTP Request" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2aa2Ejp6LTAHjT7eb7iORjxecXZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.email_form.html.executor&quot;: &quot;Run&quot;,
+    &quot;Python.8.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Email.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Init.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/marek/OneDrive/Bakalárka/Práca&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mariadb&quot;,
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\marek\OneDrive\Bakalárka\Práca" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\marek\OneDrive\Bakalárka\Práca\templates" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Init" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Práca" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Init.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.Init" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="27b6bf39-f5dd-4dd7-8654-a2ad37c5ad13" name="Changes" comment="" />
+      <created>1704542259959</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1704542259959</updated>
+      <workItem from="1704542266528" duration="1110000" />
+      <workItem from="1704547400392" duration="18851000" />
+      <workItem from="1704572844112" duration="10721000" />
+      <workItem from="1704627184172" duration="1503000" />
+      <workItem from="1704646533552" duration="2802000" />
+      <workItem from="1704654291103" duration="5248000" />
+      <workItem from="1704975119721" duration="8840000" />
+      <workItem from="1704989035586" duration="390000" />
+      <workItem from="1704991932748" duration="12000" />
+      <workItem from="1705166781879" duration="740000" />
+      <workItem from="1705224309053" duration="2084000" />
+      <workItem from="1705326269194" duration="186000" />
+      <workItem from="1705327083812" duration="1395000" />
+      <workItem from="1705346994541" duration="1895000" />
+      <workItem from="1705349363146" duration="1187000" />
+      <workItem from="1705361627978" duration="20000" />
+      <workItem from="1705487486933" duration="11733000" />
+      <workItem from="1705508685147" duration="9692000" />
+      <workItem from="1705524799893" duration="155000" />
+      <workItem from="1705582503803" duration="774000" />
+      <workItem from="1705621051073" duration="26000" />
+      <workItem from="1705683441035" duration="348000" />
+      <workItem from="1705683802676" duration="28000" />
+      <workItem from="1705767639193" duration="791000" />
+      <workItem from="1705769438822" duration="3000" />
+      <workItem from="1705939622737" duration="1000" />
+      <workItem from="1706101786963" duration="12214000" />
+      <workItem from="1706116626925" duration="4510000" />
+      <workItem from="1706130553766" duration="4480000" />
+      <workItem from="1706190362481" duration="43000" />
+      <workItem from="1706213951786" duration="1473000" />
+      <workItem from="1706226594765" duration="153000" />
+      <workItem from="1706299138949" duration="2201000" />
+      <workItem from="1706384323872" duration="13000" />
+      <workItem from="1706391357221" duration="85000" />
+      <workItem from="1706392023908" duration="96000" />
+      <workItem from="1706392205551" duration="730000" />
+      <workItem from="1706438558985" duration="12731000" />
+      <workItem from="1706452821121" duration="43000" />
+      <workItem from="1706458608137" duration="436000" />
+      <workItem from="1706461016296" duration="37000" />
+      <workItem from="1706461502201" duration="495000" />
+      <workItem from="1706462122105" duration="678000" />
+      <workItem from="1706463241381" duration="1382000" />
+      <workItem from="1706464764656" duration="111000" />
+      <workItem from="1706471422699" duration="9000" />
+      <workItem from="1706471472944" duration="1124000" />
+      <workItem from="1706516442088" duration="206000" />
+      <workItem from="1706535353285" duration="10849000" />
+      <workItem from="1706550605514" duration="4892000" />
+      <workItem from="1706558910271" duration="337000" />
+      <workItem from="1706560998201" duration="645000" />
+      <workItem from="1706563360622" duration="50000" />
+      <workItem from="1706627119487" duration="8174000" />
+      <workItem from="1706651893604" duration="27000" />
+      <workItem from="1706652990271" duration="2013000" />
+      <workItem from="1706710455627" duration="7045000" />
+      <workItem from="1706726015191" duration="272000" />
+      <workItem from="1706733926298" duration="373000" />
+      <workItem from="1706734806110" duration="117000" />
+      <workItem from="1706791504517" duration="122000" />
+      <workItem from="1706792524235" duration="5947000" />
+      <workItem from="1706801042685" duration="2098000" />
+      <workItem from="1706808140369" duration="5385000" />
+      <workItem from="1706816259652" duration="2232000" />
+      <workItem from="1706820487807" duration="5381000" />
+      <workItem from="1706879491258" duration="1365000" />
+      <workItem from="1706881301905" duration="1090000" />
+      <workItem from="1706882914195" duration="1231000" />
+      <workItem from="1707038623327" duration="1269000" />
+      <workItem from="1707040935594" duration="914000" />
+      <workItem from="1707048676851" duration="243000" />
+    </task>
+    <task id="LOCAL-00001" summary="7.1.2024&#10;spravené pozície a profil">
+      <option name="closed" value="true" />
+      <created>1704628372691</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1704628372691</updated>
+    </task>
+    <task id="LOCAL-00002" summary="7.1.2024&#10;Opravený error s databázou. Každá komunikácia s Databázou musí mať vlasný connect, inak sú errori.">
+      <option name="closed" value="true" />
+      <created>1704657123418</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1704657123418</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="7.1.2024&#10;spravené pozície a profil" />
+    <MESSAGE value="7.1.2024&#10;Opravený error s databázou. Každá komunikácia s Databázou musí mať vlasný connect, inak sú errori." />
+    <option name="LAST_COMMIT_MESSAGE" value="7.1.2024&#10;Opravený error s databázou. Každá komunikácia s Databázou musí mať vlasný connect, inak sú errori." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Práca$Flask.coverage" NAME="Flask Coverage Results" MODIFIED="1704542610607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Práca$Init.coverage" NAME="Init Coverage Results" MODIFIED="1707048902351" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Práca$8.coverage" NAME="8 Coverage Results" MODIFIED="1706471976674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Práca$Email.coverage" NAME="Email Coverage Results" MODIFIED="1706555317639" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

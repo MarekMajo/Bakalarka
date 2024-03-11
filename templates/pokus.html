@@ -1,0 +1,58 @@
+{% extends "menu.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}">
+{% endblock %}
+{% block title %}Zoznam Predmetov{% endblock %}
+{% block content %}
+
+<div class="buttons-container" style="justify-content: center">
+    <button class="button" >Zoznam Uzivatelov</button>
+    <button class="button">Zoznam Tried</button>
+    <button class="button">Zoznam Učební</button>
+    <button class="button">Zoznam Predmetov</button>
+</div>
+
+<div class="zoznam">
+    <div class="controls-container">
+        <div class="search-container">
+            <label>
+                <input type="text" onkeyup="searchFunction()" placeholder="Search for names.." class="search-input">
+            </label>
+        </div>
+        <div class="buttons-container">
+            <button id="addUserButton" class="button">Pridať Predmet</button>
+        </div>
+    </div>
+    <div class="table-container">
+        <table class="table">
+        <thead>
+            <tr>
+                <th class="id-column">#</th>
+                <th>Názov</th>
+                <th>Skratka</th>
+                <th>Názov Učebne</th>
+                <th>Skratka Učebne</th>
+                <th>Akcie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for predmet in predmety %}
+            <tr>
+                <td class="id-column">{{ predmet[0] }}</td>
+                <td>{{ predmet[1] }}</td>
+                <td>{{ predmet[2] }}</td>
+                <td>{{ predmet[3] }}</td>
+                <td>{{ predmet[4] }}</td>
+                <td>
+                    <button class="editButton">Ucebne</button>
+                    <button class="delButton">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='javascript/zoznam.js') }}"></script>
+{% endblock %}

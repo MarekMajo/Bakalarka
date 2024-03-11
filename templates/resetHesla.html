@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Login.css') }}">
+    <title>Obnovenie Hesla</title>
+<script>
+        window.onload = function() {
+            var codeInputs = document.querySelectorAll('.code-input');
+            for (let i = 0; i < codeInputs.length; i++) {
+                codeInputs[i].addEventListener('paste', function(e) {
+                    let paste = (e.clipboardData || window.clipboardData).getData('text');
+                    if (paste.length === codeInputs.length) {
+                        for (let j = 0; j < codeInputs.length; j++) {
+                            codeInputs[j].value = paste[j] || '';
+                        }
+                    }
+                    e.preventDefault();
+                });
+            }
+        };
+    </script>
+</head>
+<body>
+<div class="Obnovenie_Hesla">
+    {% if reset == 0 %}
+    <img src="static/images/logo.png" class="img" alt="logo.png">
+    <h1>Obnovenie Hesla</h1>
+    <form action="/Obnovenie_Hesla" method="POST">
+        <label for="Id">Zadajte Id:</label>
+        <input type="text" id="Id" name="id" value="{{ id }}" required><br><br>
+        <label for="Email">Zadajte Email:</label>
+        <input type="text" id="Email" name="email" value="{{ email }}" required><br><br>
+
+        <input type="submit" value="Odoslať Kód">
+    </form>
+        {% if error %}
+        <p style="color: red;">Zle zadané ID alebo Email. Skúste to znova.</p>
+        {% endif %}
+    {% elif reset == 1 %}
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="img" alt="logo">
+        <h1>Obnovenie Hesla</h1>
+        <form action="/postKod" method="POST">
+            <label for="IdCode">Zadajte Id:</label>
+            <input type="text" id="IdCode" name="id" value="{{ id }}" readonly><br><br>
+            <label for="EmailCode">Zadajte Email:</label>
+            <input type="text" id="EmailCode" name="email" value="{{ email }}" readonly><br><br>
+            {% for i in range(6) %}
+            <input type="text" class="code-input" id="kod{{ i }}" name="kod{{ i }}" maxlength="1" required style="width: 40px; text-align: center;">
+            {% endfor %}
+            <br><br>
+            <input type="submit" value="Resetovať Heslo">
+        </form>
+        {% if error %}
+            <p style="color: red;">Zadaný kód je neplatný. Skúste to znova.</p>
+        {% endif %}
+    {% elif reset == 2 %}
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="img" alt="logo">
+        <h1>Zadajte Nové Heslo</h1>
+        <form action="/noveHeslo" method="POST">
+            <label for="NoveHeslo">Nové heslo:</label>
+            <input type="password" id="NoveHeslo" name="noveheslo" required><br><br>
+            <label for="OpakNoveHeslo">Potvrďte nové heslo:</label>
+            <input type="password" id="OpakNoveHeslo" name="opaknoveheslo" required><br><br>
+            <input type="submit" value="Zmeniť Heslo">
+        </form>
+        {% if error %}
+            <p style="color: red;">Zadané heslá sa neuhodujú. Skúste to znova.</p>
+        {% endif %}
+    {% endif %}
+    </div>
+
+</body>
+</html>
+

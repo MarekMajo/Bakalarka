@@ -1,0 +1,134 @@
+{% extends "menu.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}" >
+{% endblock %}
+{% block title %}EditZnamky{% endblock %}
+{% block content %}
+<div class="buttons-container" style="justify-content: center">
+    <select class="rights-selector" id="triedy">
+        <option value="">Vyberte triedu</option>
+        {% for trieda in triedy %}
+        <option value="{{ trieda[0] }}">{{ trieda[1] }}</option>
+        {% endfor %}
+    </select>
+    <select class="rights-selector" id="Predmety" disabled>
+        <option value="">Vyberte Predmet</option>
+    </select>
+
+    <select class="rights-selector" id="PolRokSet" disabled>
+        <option value="0">Prvý Polrok</option>
+        <option value="1">Druhý Polrok</option>
+    </select>
+    <button class="button" disabled>Uložiť Zmeny</button>
+    <button class="button" id="Nastavenie" disabled>Nastavenia</button>
+</div>
+
+<div class="Znamky">
+    <div class="table-container">
+        <table class="table">
+        <thead>
+            <tr>
+                <th class="box"></th>
+                <th class="id-column">#</th>
+                <th>Meno a priezvisko</th>
+                <th style="width: 5%">Priemer</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<div id="EditKategorie" class="modal">
+    <div class="modal-content-Kategorie">
+        <button class="button" id="addKategoriubtn">Pridať kategóriu</button>
+        <button class="button">Vymazať kategórie</button>
+        <a class="EditKategorieclose">X</a>
+        <div class="table-modal-container">
+            <div class="table-modal-container">
+            <table class="modal-table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Názov</th>
+                        <th>Typ</th>
+                        <th>Váha</th>
+                        <th>Max body</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr></tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div class="buttons-container">
+            <button id="SaveEditKategorie" class="button">Uložiť</button>
+        </div>
+    </div>
+</div>
+
+<div id="AddKategoriu" class="modal">
+    <div class="modal-content">
+        <a class="AddKategoriuclose">X</a>
+        <div class="table-modal-container">
+            <label for="kategoriaName"><input class="search-input" type="text" id="kategoriaName" placeholder="Názov Kategórie"></label><br>
+            <label>Typ:
+                <select class="rights-selector" id="typ">
+                    <option value="znamka">Známka</option>
+                    <option value="body">Body</option>
+                    <option value="percenta">Percentá</option>
+                </select>
+            </label><br>
+            <label>Váha:
+                <select class="rights-selector" id="setVaha">
+                    <option value="0.25">Veľmi malá dôležitosť, štvrtinová váha (0.25x)</option>
+                    <option value="0.5">Malá dôležitosť, polovičná váha (0.5x)</option>
+                    <option value="1" selected>Štandardná váha (1x)</option>
+                    <option value="2">Dôležitá udalosť, dvojnásobná váha (2x)</option>
+                    <option value="3">Veľmi udalosť, trojnásobná váha (3x)</option>
+                    <option value="zadam">Váhu si nastavím sám</option>
+                </select>
+            </label><br>
+            <label id="zadanie_vahy_label" style="display: none">Váha: <input type="text" class="search-input" id="zadanie_vahy"></label><br>
+            <label id="zadanie_maxBodov_label" style="display: none">Max Bodov: <input type="text" class="search-input" id="zadanie_maxBodov"></label><br>
+            <button style="display: none" class="button" id="setVyhodnoteniabtn">Nastaviť Vyhodnotenia</button>
+        </div>
+        <div class="buttons-container">
+            <button id="SaveAddKategoriu" class="button">Uložiť</button>
+        </div>
+    </div>
+</div>
+
+<div id="setVyhodnotenia" class="modal">
+    <div class="modal-content-vyhodnotenie">
+        <a class="SetVyhodnoteniaclose">X</a>
+        <div class="table-modal-container">
+            <div class="table-modal-container">
+            <table class="modal-table">
+                <thead>
+                    <tr>
+                        <th>Známka</th>
+                        <th>Od (>=)</th>
+                        <th>Do (<=)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr></tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div class="buttons-container">
+            <button id="SaveSetVyhodnotenia" class="button">Uložiť</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="{{ url_for('static', filename='javascript/zoznam.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/EditZnamky.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,21 @@
+Uzivatelia:
+
+	
+Triedy: 
+	opraviť počítanie žiakov v základom výpise pri načítaní stránky.
+	Výpis pre žiakov ohraničiť na zadaní ročník. 
+
+Učebňe:
+	
+
+Predmety:
+	Opraviť copyFromLastYear:
+		Fungovanie tak že sa všetko skopíruje ale bude ignorovať priradených žiakov(nak si to učiteľia pak priradia)
+
+
+Rozvrh:
+	Vytvoriť základné zobrazenie.
+	Vytvoriť add do predmetu do rozhvrhu.
+	Opraviť/pridať/upraviť(hocičo)s databázou na rozvrhy.
+	Vytvoriť edit predmetu v rozvrhu.
+	Vytvoriť okienko na rozšírené informácie o hodine(celý/celé: nazov predmetu/ meno ucitela/ ročník/učebňa)
