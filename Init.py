@@ -11,6 +11,7 @@ from Znamky import Znamky
 if __name__ == "__main__":
     #adress = {"host": "192.168.191.200", "user": "root", "password": "admin", "database": "pokus"}
     adress = {"host": "localhost", "user": "root", "password": "admin", "database": "pokus"}
+    #adress = {"host": "192.168.191.76", "user": "root", "password": "admin", "database": "pokus"}
     base = BaseServer(adress)
     Zoznamy(base)
     PositionsServer(base)

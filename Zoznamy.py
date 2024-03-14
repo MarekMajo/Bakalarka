@@ -21,6 +21,7 @@ class Zoznamy:
         self.app.route('/Triedy/getTriedu', methods=['POST'])(self.base.check_token()(self.base.check_permission([])(self.triedy_getTriedu)))
         self.app.route('/Triedy/delTriedu', methods=['POST'])(self.base.check_token()(self.base.check_permission([])(self.triedy_delTriedu)))
         self.app.route('/Triedy/updateTriedu', methods=['POST'])(self.base.check_token()(self.base.check_permission([])(self.triedy_updateTriedu)))
+        self.app.route('/Triedy/getPredmetyRocniku')(self.base.check_token()(self.base.check_permission([])(self.triedy_getPredmetyRocniku)))
 
         self.app.route('/Predmety')(self.base.check_token()(self.base.check_permission([])(self.showPredmety)))
         self.app.route('/Predmety/getPredmety')(self.base.check_token()(self.base.check_permission([])(self.predmety_getPredmety)))
@@ -90,7 +91,7 @@ class Zoznamy:
             cursor.execute("insert into ucebne_triedy VALUES (%s,%s)", (ucebna, id,))
             cursor.execute("insert into trieda_rocniky VALUES (%s,%s)", (id, rocnik,))
             for ziak in ziaci:
-                cursor.execute("insert into ziak_trieda VALUES (%s,%s)", (ziak, id,))
+                cursor.execute("insert into ziak_trieda VALUES (%s,%s,%s)", (ziak, id,rok,))
             db.commit()
             cursor.close()
             db.close()
@@ -174,6 +175,15 @@ class Zoznamy:
         db.close()
         return jsonify(True)
 
+    def triedy_getPredmetyRocniku(self):
+        db = mysql.connector.connect(**self.adress)
+        cursor = db.cursor()
+        data = request.json
+        rok = session.get('zvolenyRok')
+        print(data)
+        cursor.close()
+        db.close()
+        return jsonify(True)
     def skolskeRokyulozitNovyRok(self):
         data = request.json
         nazov = data['zaciatok'].split('-')[0] + "/" + data['koniec'].split('-')[0]

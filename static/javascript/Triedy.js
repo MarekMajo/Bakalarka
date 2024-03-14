@@ -1,5 +1,6 @@
 let TriednyListener = null;
 let ZadanyZiaciListener = null;
+let ZadanePredmetyListener = null;
 let UcebnaListener = null;
 let tBodyListener = null;
 
@@ -193,6 +194,73 @@ function ZadanyZiaci(typ, rocnik, vyberZiakov) {
     };
 }
 
+function ZadanePredmety(typ, rocnik, vyberPredmety) {
+    return function () {
+        let modal = document.getElementById('vyberTriedny_Ziaci');
+        let tbody = document.querySelector('#vyberTriedny_Ziaci .modal-table tbody');
+        modal.style.display = 'block';
+        document.getElementsByClassName('vyberTriedny_Ziaciclose')[0].onclick = function () {
+            modal.style.display = 'none';
+        };
+        if (typ === 'add') {
+            sendRequest('/Triedy/getZiaci', 'POST', ({rocnik:rocnik}), (osoby)=> {
+                document.getElementById("meno").textContent = "Meno Priezvisko";
+                document.getElementById("role").textContent = "Práva";
+                tbody.innerHTML = '';
+                osoby.forEach((osoba) => {
+                    let [id, meno, role] = osoba;
+                    let rowHTML = `    <tr>
+                           <td><input type="checkbox" value="${id}"></td>
+                           <td>${id}</td>
+                           <td>${meno}</td>
+                           <td>${role}</td>
+                           </tr>`;
+                    tbody.insertAdjacentHTML('beforeend', rowHTML);
+                });
+            });
+        } else {
+            sendRequest('/Triedy/getZiaci', 'POST', ({rocnik:rocnik}), (osoby)=> {
+                document.getElementById("meno").textContent = "Meno Priezvisko";
+                document.getElementById("role").textContent = "Práva";
+                tbody.innerHTML = '';
+                console.log(rocnik);
+                console.log(osoby);
+                osoby.forEach((osoba) => {
+                    let [id, meno, role] = osoba;
+                    let checkedAttribute = '';
+                    if (vyberPredmety.includes(id)) {
+                        checkedAttribute = "checked";
+                    }
+                    let rowHTML = `<tr>
+                        <td><input type="checkbox" value="${id}" ${checkedAttribute}></td>
+                        <td>${id}</td>
+                        <td>${meno}</td>
+                        <td>${role}</td>
+                        </tr>`;
+                    tbody.insertAdjacentHTML('beforeend', rowHTML);
+                });
+            });
+        }
+        document.getElementById('vyberTriedny_ZiaciSaveButton').onclick = function () {
+            let checkboxes = document.querySelectorAll('#vyberTriedny_Ziaci .modal-table tbody input[type="checkbox"]');
+            let vyberPredmetyName = [];
+            vyberPredmety.length = 0;
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    vyberPredmety.push(parseInt(checkbox.value));
+                    let nameCell = checkbox.closest('tr').getElementsByTagName('td')[2];
+                    vyberPredmetyName.push(nameCell.textContent.trim());
+                }
+            });
+            if (vyberPredmetyName.length > 0) {
+                document.getElementById('ZadanePredmety').value = vyberPredmetyName.join(', ');
+            } else {
+                document.getElementById('ZadanePredmety').value = "None";
+            }
+            modal.style.display = 'none';
+        };
+    };
+}
 function Ucebna(typ, vyberUcebne) {
     return function () {
         let modal = document.getElementById('vyberTriedny_Ziaci');
@@ -279,12 +347,14 @@ document.getElementById('addTriedaButton').onclick = function () {
         document.getElementById('addTriedu').style.display =  'none';
         document.getElementById('Triedny').removeEventListener('click', TriednyListener);
         document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
+        document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
         document.getElementById('Ucebna').removeEventListener('click', UcebnaListener);
         document.getElementById('ziaci').style.display = 'none';
     };
     let vyberTriedneho = [];
     let vyberZiakov = [];
     let vyberUcebne = [];
+    let vyberPredmety = [];
     let rocnik = '';
     document.querySelector(".rights-selector.addTriedu").onchange = function () {
         rocnik = document.querySelector(".rights-selector.addTriedu").value;
@@ -292,13 +362,21 @@ document.getElementById('addTriedaButton').onclick = function () {
             document.getElementById('ziaci').style.display = 'none';
             vyberZiakov.length = 0;
             document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
+            document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
         } else {
             document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
+            document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
             vyberZiakov.length = 0;
+            vyberPredmety.length = 0;
+            console.log(rocnik)
             document.getElementById('ZadanyZiaci').value = "None";
+            document.getElementById('ZadanePredmety').value = "None";
             ZadanyZiaciListener = ZadanyZiaci('add', rocnik, vyberZiakov);
+            ZadanePredmetyListener = ZadanePredmety('add', rocnik, vyberPredmety);
             document.getElementById('ZadanyZiaci').addEventListener('click', ZadanyZiaciListener);
+            document.getElementById('ZadanePredmety').addEventListener('click', ZadanePredmetyListener);
             document.getElementById('ziaci').style.display = 'block';
+            document.getElementById('predmety').style.display = 'block';
         }
     }
     TriednyListener = Triedny('add', vyberTriedneho);

@@ -37,13 +37,13 @@
             </div>
 </div>
 <div id="mySidebar" class="sidebar">
+        <a href="\Rozvrh">Rozvrhy</a>
+        <a href="\EditZnamky">Známky</a>
     {% for opravnenie in opravnenia %}
         {% if opravnenie == 'Zobraz pozicie' %}
         <a href="\pozicie">Pozície</a>
         {% endif %}
         {% if opravnenie == 'Zobraz pokus' %}
-        <a href="\Rozvrh">Rozvrhy</a>
-        <a href="\EditZnamky">Známky</a>
         {% endif %}
         {% if opravnenie in ['Zoznam pouzivatelov'] %}
     <div class="dropdown-sidebar">

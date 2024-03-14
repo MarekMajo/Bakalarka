@@ -9,7 +9,11 @@
     <select class="rights-selector" id="triedy">
         <option value="">Vyberte triedu</option>
         {% for trieda in triedy %}
-        <option value="{{ trieda[0] }}">{{ trieda[1] }}</option>
+            {% if zvTrieda == trieda[0] %}
+                <option value="{{ trieda[0] }}" selected>{{ trieda[1] }}</option>
+            {% else %}
+                <option value="{{ trieda[0] }}">{{ trieda[1] }}</option>
+            {% endif %}
         {% endfor %}
     </select>
     <select class="rights-selector" id="Predmety" disabled>
@@ -20,29 +24,25 @@
         <option value="0">Prvý Polrok</option>
         <option value="1">Druhý Polrok</option>
     </select>
-    <button class="button" disabled>Uložiť Zmeny</button>
+    <button class="button" id="save" >Uložiť Zmeny</button>
     <button class="button" id="Nastavenie" disabled>Nastavenia</button>
 </div>
 
-<div class="Znamky">
+<div id="hlavnaTabulka" class="Znamky">
     <div class="table-container">
         <table class="table">
-        <thead>
-            <tr>
-                <th class="box"></th>
-                <th class="id-column">#</th>
-                <th>Meno a priezvisko</th>
-                <th style="width: 5%">Priemer</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+            <thead>
+                <tr></tr>
+            </thead>
+            <tbody>
+                <tr></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
 <div id="EditKategorie" class="modal">
-    <div class="modal-content-Kategorie">
+    <div  class="modal-content-Kategorie">
         <button class="button" id="addKategoriubtn">Pridať kategóriu</button>
         <button class="button">Vymazať kategórie</button>
         <a class="EditKategorieclose">X</a>
@@ -71,7 +71,7 @@
 </div>
 
 <div id="AddKategoriu" class="modal">
-    <div class="modal-content">
+    <div style="width: 30%;" class="modal-content">
         <a class="AddKategoriuclose">X</a>
         <div class="table-modal-container">
             <label for="kategoriaName"><input class="search-input" type="text" id="kategoriaName" placeholder="Názov Kategórie"></label><br>

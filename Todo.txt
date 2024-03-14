@@ -2,20 +2,13 @@ Uzivatelia:
 
 	
 Triedy: 
-	opraviť počítanie žiakov v základom výpise pri načítaní stránky.
-	Výpis pre žiakov ohraničiť na zadaní ročník. 
+	Pridať možnosť pridania predmetu do triedy
 
 Učebňe:
 	
 
 Predmety:
-	Opraviť copyFromLastYear:
-		Fungovanie tak že sa všetko skopíruje ale bude ignorovať priradených žiakov(nak si to učiteľia pak priradia)
-
+	Upraviť kód tak že keď editujem žiakov tam nie že full delete a potom insert, ale kontrola a vymazať iba potrebných a pridať iba potrebných.
 
 Rozvrh:
-	Vytvoriť základné zobrazenie.
-	Vytvoriť add do predmetu do rozhvrhu.
-	Opraviť/pridať/upraviť(hocičo)s databázou na rozvrhy.
-	Vytvoriť edit predmetu v rozvrhu.
-	Vytvoriť okienko na rozšírené informácie o hodine(celý/celé: nazov predmetu/ meno ucitela/ ročník/učebňa)
+	Opraviť!!!
