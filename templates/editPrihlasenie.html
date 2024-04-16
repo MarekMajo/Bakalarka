@@ -1,41 +1,6 @@
-{% extends "menu.html" %}
+{% extends "mainHtml.html" %}
 {% block head %}
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7;
-  }
-  .profile-container {
-    width: 80%;
-    max-width: 900px;
-    margin: 40px auto;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    display: flex;
-    align-items: flex-start;
-  }
-  .profile-info {
-    flex: 1;
-  }
-  .profile-info h2 {
-    color: #333;
-    font-size: 24px;
-  }
-  .profile-info .info {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-  }
-  .button {
-    background-color: #5cb85c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-  }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/editPrihlasenie.css') }}">
 {% endblock %}
 {% block title %}Edit Prihlasovacie Udaje{% endblock %}
 {% block content %}
@@ -66,59 +31,6 @@
   </div>
 </div>
 
-<script>
-  document.getElementById('toggle-stareheslo').addEventListener('mouseover', function() {
-  document.getElementById('stareheslo').type = 'text';
-});
-document.getElementById('toggle-stareheslo').addEventListener('mouseout', function() {
-  document.getElementById('stareheslo').type = 'password';
-});
-
-document.getElementById('toggle-noveheslo').addEventListener('mouseover', function() {
-  document.getElementById('noveheslo').type = 'text';
-});
-document.getElementById('toggle-noveheslo').addEventListener('mouseout', function() {
-  document.getElementById('noveheslo').type = 'password';
-});
-
-document.getElementById('toggle-opaknoveheslo').addEventListener('mouseover', function() {
-  document.getElementById('opaknoveheslo').type = 'text';
-});
-document.getElementById('toggle-opaknoveheslo').addEventListener('mouseout', function() {
-  document.getElementById('opaknoveheslo').type = 'password';
-});
-
-document.getElementById('ulozButton').addEventListener('click', function() {
-      var id = document.getElementById('osCislo').textContent;
-      var Prihlasovacie_Meno = document.getElementById('Prihlasovacie Meno').textContent;
-      var stareheslo = document.getElementById('stareheslo').value;
-      var noveheslo = document.getElementById('noveheslo').value;
-      var opaknoveheslo = document.getElementById('opaknoveheslo').value;
-      document.getElementById('starehesloError').style.display = 'none';
-      document.getElementById('opaknovehesloError').style.display = 'none';
-      var formData = {
-          id_: id,
-          Prihlasovacie_Meno: Prihlasovacie_Meno,
-          stareheslo: stareheslo,
-          noveheslo: noveheslo
-      };
-
-      sendRequest('over_ulozHeslo','POST', ({stareheslo: formData}), (data) => {
-        if (!data['result']) {
-          document.getElementById('starehesloError').style.display = 'inline';
-        }
-      });
-      if ((noveheslo !== opaknoveheslo) || (!noveheslo || !opaknoveheslo)) {
-          document.getElementById('opaknovehesloError').style.display = 'inline';
-          return;
-      }
-      sendRequest('over_ulozHeslo','POST', ({formData: formData}), (data) => {
-        if (!data['result']) {
-          return;
-        }
-        window.location.href = '/profil';
-      });
-  });
-</script>
+<script src="{{ url_for('static', filename='javascript/editPrihlasenie.js') }}"></script>
 
 {% endblock %}

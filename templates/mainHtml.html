@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Menu{% endblock %}</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/template_css.css') }}">
+    <script src="{{ url_for('static', filename='javascript/mainHtml.js') }}"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+<div class="top-bar">
+    <div class="container" onclick="toggleNav()">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
+    <div class="mainLogo">
+        <a href="\dashboard"><img src="/static/images/logo.png" alt="logo.png" width=50px height=50px></a>
+    </div>
+    <div class="dropdownYear">
+     <select id="zvolenýRok" onchange="changeRok()">
+        {% for skolskyRok in skolskeRoky %}
+            {% if zvolenyRok == skolskyRok[0]%}
+                <option value="{{skolskyRok[0]}}" selected>{{skolskyRok[0]}}</option>
+            {% else %}
+                <option value="{{skolskyRok[0]}}">{{skolskyRok[0]}}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+        {% if deti %}
+            <select id="switchByChild" onchange="selectswitchByChild()" >
+            {% if ucitel %}
+                {% if zvelenyView == ucitel %}
+                    <option value="Učiteľ" selected>Ucitel</option>
+                {% else %}
+                    <option value="Učiteľ" >Ucitel</option>
+                {% endif %}
+            {% endif %}
+            {% for dieta in deti %}
+                {% if zvelenyView == dieta[0] %}
+                    <option value="{{dieta[0]}}" selected>{{dieta[1]}}</option>
+                {% else %}
+                    <option value="{{dieta[0]}}">{{dieta[1]}}</option>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </select>
+        </div>
+        <div class="dropdown">
+        <button>Prihlásený ako: <br>{{ meno }}</button>
+        <div class="dropdown-content">
+            <a href="/profil">Môj profil</a>
+            <a href="/logout">Odhlásiť sa</a>
+        </div>
+            </div>
+</div>
+<div id="mySidebar" class="sidebar">
+    <a href="\Rozvrh">Rozvrhy</a>
+    {% if zvelenyView == ucitel %}
+        <a href="\EditZnamky">Známky</a>
+    {% else %}
+        <a href="\Znamky">Známky</a>
+    {% endif %}
+    {% for opravnenie in opravnenia %}
+        {% if opravnenie == 1 %}
+        <a href="\pozicie">Pozície</a>
+        {% endif %}
+    {% endfor %}
+    {% set ns = namespace(zobrazitZoznamy=false) %}
+    {% for opravnenie in opravnenia %}
+        {% if opravnenie in [5, 15, 16, 17, 18, 19] %}
+            {% set ns.zobrazitZoznamy = true %}
+        {% endif %}
+    {% endfor %}
+    {% if ns.zobrazitZoznamy %}
+    <div class="dropdown-sidebar">
+        <a class="dropbtn-sidebar">Zoznamy</a>
+        <div class="dropdown-content-sidebar">
+            {% for opravnenie in opravnenia %}
+                {% if opravnenie == 5 %}
+                    <a href="\uzivatelia">Zoznam používateľov</a>
+                {% endif %}
+                {% if opravnenie == 15 %}
+                    <a href="\Predmety">Zoznam Predmetov</a>
+                {% endif %}
+                {% if opravnenie == 16 %}
+                    <a href="\Ucebne">Zoznam Učební</a>
+                {% endif %}
+                {% if opravnenie == 17 %}
+                    <a href="\Triedy">Zoznam Tried</a>
+                {% endif %}
+                {% if opravnenie == 18 %}
+                    <a href="\skolskeRoky">Školské Roky</a>
+                {% endif %}
+                {% if opravnenie == 19 %}
+                    <a href="\Rocniky">Zoznam Ročníkov</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="extend">
+    {% block content %}
+    {% endblock %}
+    </div>
+</body>
+</html>

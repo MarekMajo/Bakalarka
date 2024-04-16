@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import mysql.connector
 
-class ProfilServer:
+class Profil:
     def __init__(self, Base):
         self.base = Base
         self.token = self.base.getToken()
@@ -13,25 +13,25 @@ class ProfilServer:
         self.routing_pozicie()
 
     def routing_pozicie(self):
-        self.app.route('/profil')(self.base.check_token()(self.profil))
-        self.app.route('/editProfil')(self.base.check_permission(['Edit Osoba info'])(self.base.check_token()(self.editProfil)))
-        self.app.route('/prihlasovacieUdaje')(self.base.check_token()(self.base.check_permission(['Edit Prihlasovacie Udaje'])(self.prihlasovacieUdaje)))
-        self.app.route('/upload_photo', methods=['POST'])(self.base.check_token()(self.base.check_permission(['Edit Osoba info'])(self.upload_photo)))
-        self.app.route('/deletePhoto')(self.base.check_token()(self.base.check_permission(['Edit Osoba info'])(self.deletePhoto)))
-        self.app.route('/ulozUdaje', methods=['POST'])(self.base.check_token()(self.base.check_permission(['Edit Osoba info'])(self.ulozUdaje)))
-        self.app.route('/over_ulozHeslo', methods=['POST'])(self.base.check_token()(self.base.check_permission(['Edit Prihlasovacie Udaje'])(self.over_ulozHeslo)))
+        self.app.route('/profil')(self.base.check_token()(self.showProfil))
+        self.app.route('/editProfil')(self.base.check_permission([3])(self.base.check_token()(self.editProfil)))
+        self.app.route('/prihlasovacieUdaje')(self.base.check_token()(self.base.check_permission([6])(self.prihlasovacieUdaje)))
+        self.app.route('/upload_photo', methods=['POST'])(self.base.check_token()(self.base.check_permission([2])(self.upload_photo)))
+        self.app.route('/deletePhoto')(self.base.check_token()(self.base.check_permission([4])(self.deletePhoto)))
+        self.app.route('/ulozUdaje', methods=['POST'])(self.base.check_token()(self.base.check_permission([3])(self.ulozUdaje)))
+        self.app.route('/over_ulozHeslo', methods=['POST'])(self.base.check_token()(self.base.check_permission([6])(self.over_ulozHeslo)))
 
     def userInfo(self):
         id = self.token.getID(session.get("token"))
         db = mysql.connector.connect(**self.adress)
         cursor = db.cursor()
-        cursor.execute(f"select osoba_id, meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id, pr_meno "
-                       f"from osoba join prihlasovacie_udaje pu on osoba_id = pu.login_id where osoba_id = '{id}'")
+        cursor.execute("select osoba_id, meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id, pr_meno "
+                       "from osoba join prihlasovacie_udaje pu on osoba_id = pu.login_id where osoba_id = %s", (id,))
         udaje = cursor.fetchone()
         cursor.close()
         db.close()
         return udaje
-    def profil(self):
+    def showProfil(self):
         photo = "static/Profilovky/" + str(self.token.getID(session.get("token")))
         if os.path.exists(photo):
             return self.base.render_web("profil.html", udaje=self.userInfo(), photo_url=photo, editUzivatela=False)
@@ -67,10 +67,11 @@ class ProfilServer:
         db = mysql.connector.connect(**self.adress)
         cursor = db.cursor()
         hodnoty = list(request.json.values())
-        print(hodnoty)
-        cursor.execute(f"UPDATE pokus.osoba t SET t.meno = '{hodnoty[1].split(' ')[0]}', t.priezvisko = '{hodnoty[1].split(' ')[1]}', "
-                            f"t.rod_cislo = '{hodnoty[2]}', t.Pohlavie = '{hodnoty[3]}' ,t.bydlisko = '{hodnoty[4]}', "
-                            f"t.telefon = '{hodnoty[5]}', t.email = '{hodnoty[6]}' WHERE t.osoba_id = '{hodnoty[0]}'")
+        cursor.execute("UPDATE pokus.osoba t SET t.meno = %s, t.priezvisko = %s, "
+                            "t.rod_cislo = %s, t.Pohlavie = %s ,t.bydlisko = %s, "
+                            "t.telefon = %s, t.email = %s WHERE t.osoba_id = %s",
+                       (hodnoty[1].split(' ')[0], hodnoty[1].split(' ')[1], hodnoty[2],
+                        hodnoty[3], hodnoty[4], hodnoty[5], hodnoty[6], hodnoty[0]))
         db.commit()
         cursor.close()
         db.close()
@@ -85,7 +86,8 @@ class ProfilServer:
         data = request.json
         try:
             data = data["stareheslo"]
-            cursor.execute(f"select * from prihlasovacie_udaje where login_id = '{data['id_']}' and pr_heslo = '{data['stareheslo']}'")
+            cursor.execute("select * from prihlasovacie_udaje where login_id = %s and pr_heslo = %s",
+                           (data['id_'], data['stareheslo']))
             result = cursor.fetchall()
             cursor.close()
             db.close()
@@ -95,10 +97,12 @@ class ProfilServer:
         except:
             try:
                 data = data["formData"]
-                cursor.execute(f"select * from prihlasovacie_udaje where login_id = '{data['id_']}' and pr_heslo = '{data['stareheslo']}'")
+                cursor.execute("select * from prihlasovacie_udaje where login_id = %s and pr_heslo = %s",
+                               (data['id_'], data['stareheslo'],))
                 result = cursor.fetchall()
                 if result:
-                    cursor.execute(f"update prihlasovacie_udaje set pr_heslo = '{data['noveheslo']}' where login_id = '{data['id_']}'")
+                    cursor.execute("update prihlasovacie_udaje set pr_heslo = %s where login_id = %s",
+                                   (data['noveheslo'], data['id_'],))
                     db.commit()
                     cursor.close()
                     db.close()

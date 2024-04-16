@@ -39,6 +39,19 @@ function filterRocniky() {
         }
     }
 }
+function filterRocnikyPredmetu() {
+    var select = document.getElementById('predmeSelect').value;
+    var tr = document.querySelector(".modal-table").getElementsByTagName("tr");
+
+    for (var i = 1; i < tr.length; i++) {
+        var rocnik = tr[i].getElementsByTagName("td")[4].textContent;
+        if (rocnik === select) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
 
 function tBody(tbody){
     return function (event) {
@@ -55,7 +68,6 @@ function tBody(tbody){
 
 function Triedny(typ, vyberTriedneho){
     return function () {
-        console.log(vyberTriedneho)
         let modal = document.getElementById('vyberTriedny_Ziaci');
         let tbody = document.querySelector('#vyberTriedny_Ziaci .modal-table tbody');
         modal.style.display = 'block';
@@ -63,18 +75,18 @@ function Triedny(typ, vyberTriedneho){
             modal.style.display = 'none';
             tbody.removeEventListener('click', (tBodyListener));
         };
+        document.getElementById("meno").textContent = "Meno Priezvisko";
+        document.getElementById('rocnik').style.display = 'none';
+        document.getElementById('role').style.display = 'none';
         if (typ === 'add') {
             sendRequest('/Triedy/getTriedny', 'POST', null, (osoby)=> {
-                document.getElementById("meno").textContent = "Meno Priezvisko";
-                document.getElementById("role").textContent = "Práva";
                 tbody.innerHTML = '';
                 osoby.forEach((osoba) => {
-                    let [id, meno, role] = osoba;
+                    let [id, meno] = osoba;
                     let rowHTML = `    <tr>
                            <td><input type="checkbox" value="${id}"></td>
                            <td>${id}</td>
                            <td>${meno}</td>
-                           <td>${role}</td>
                            </tr>`;
                     tbody.insertAdjacentHTML('beforeend', rowHTML);
                 });
@@ -83,11 +95,10 @@ function Triedny(typ, vyberTriedneho){
             });
         } else {
             sendRequest('/Triedy/getTriedny', 'POST', (typ), (osoby)=> {
-                document.getElementById("meno").textContent = "Meno Priezvisko";
-                document.getElementById("role").textContent = "Práva";
                 tbody.innerHTML = '';
                 osoby.forEach((osoba) => {
-                    let [id, meno, role] = osoba;
+                    console.log(osoba)
+                    let [id, meno] = osoba;
                     let checkedAttribute = '';
                     if (vyberTriedneho.includes(id)) {
                             checkedAttribute = "checked";
@@ -96,7 +107,6 @@ function Triedny(typ, vyberTriedneho){
                            <td><input type="checkbox" value="${id}" ${checkedAttribute}></td>
                            <td>${id}</td>
                            <td>${meno}</td>
-                           <td>${role}</td>
                            </tr>`;
                     tbody.insertAdjacentHTML('beforeend', rowHTML);
                 });
@@ -134,31 +144,30 @@ function ZadanyZiaci(typ, rocnik, vyberZiakov) {
         document.getElementsByClassName('vyberTriedny_Ziaciclose')[0].onclick = function () {
             modal.style.display = 'none';
         };
+        document.getElementById("meno").textContent = "Meno Priezvisko";
+        document.getElementById('rocnik').style.display = 'none';
+        document.getElementById('role').style.display = 'none';
         if (typ === 'add') {
             sendRequest('/Triedy/getZiaci', 'POST', ({rocnik:rocnik}), (osoby)=> {
-                document.getElementById("meno").textContent = "Meno Priezvisko";
-                document.getElementById("role").textContent = "Práva";
                 tbody.innerHTML = '';
                 osoby.forEach((osoba) => {
-                    let [id, meno, role] = osoba;
+                    let [id, meno] = osoba;
                     let rowHTML = `    <tr>
                            <td><input type="checkbox" value="${id}"></td>
                            <td>${id}</td>
                            <td>${meno}</td>
-                           <td>${role}</td>
                            </tr>`;
                     tbody.insertAdjacentHTML('beforeend', rowHTML);
                 });
             });
         } else {
             sendRequest('/Triedy/getZiaci', 'POST', ({rocnik:rocnik}), (osoby)=> {
-                document.getElementById("meno").textContent = "Meno Priezvisko";
-                document.getElementById("role").textContent = "Práva";
                 tbody.innerHTML = '';
                 console.log(rocnik);
                 console.log(osoby);
                 osoby.forEach((osoba) => {
-                    let [id, meno, role] = osoba;
+                    console.log(osoba)
+                    let [id, meno] = osoba;
                     let checkedAttribute = '';
                     if (vyberZiakov.includes(id)) {
                         checkedAttribute = "checked";
@@ -167,7 +176,6 @@ function ZadanyZiaci(typ, rocnik, vyberZiakov) {
                         <td><input type="checkbox" value="${id}" ${checkedAttribute}></td>
                         <td>${id}</td>
                         <td>${meno}</td>
-                        <td>${role}</td>
                         </tr>`;
                     tbody.insertAdjacentHTML('beforeend', rowHTML);
                 });
@@ -197,48 +205,79 @@ function ZadanyZiaci(typ, rocnik, vyberZiakov) {
 function ZadanePredmety(typ, rocnik, vyberPredmety) {
     return function () {
         let modal = document.getElementById('vyberTriedny_Ziaci');
+        let select = document.getElementById('predmeSelect');
         let tbody = document.querySelector('#vyberTriedny_Ziaci .modal-table tbody');
+        select.style.display = 'block';
         modal.style.display = 'block';
+        document.getElementById("meno").textContent = "Názov Predmetu";
+        document.getElementById('role').textContent = 'Meno Učiteľa';
+        document.getElementById('role').style.display = 'table-cell';
+        document.getElementById('rocnik').textContent = 'Ročník';
+        document.getElementById('rocnik').style.display = 'table-cell';
         document.getElementsByClassName('vyberTriedny_Ziaciclose')[0].onclick = function () {
             modal.style.display = 'none';
+            select.style.display = 'none';
         };
         if (typ === 'add') {
-            sendRequest('/Triedy/getZiaci', 'POST', ({rocnik:rocnik}), (osoby)=> {
-                document.getElementById("meno").textContent = "Meno Priezvisko";
-                document.getElementById("role").textContent = "Práva";
+            sendRequest('/Triedy/getPredmetyRocniku', 'GET', null, (data)=> {
                 tbody.innerHTML = '';
-                osoby.forEach((osoba) => {
-                    let [id, meno, role] = osoba;
+                select.innerHTML = '';
+                let Predmety = data['predmety'];
+                let Rocniky = data['rocniky'];
+                Rocniky.forEach((rocniky) =>{
+                    let temp;
+                    if (rocniky[1] === rocnik){
+                        temp = `<option value="${rocniky[1]}" selected>${rocniky[1]}</option>`;
+                    }else {
+                        temp = `<option value="${rocniky[1]}">${rocniky[1]}</option>`;
+                    }
+                    select.insertAdjacentHTML('beforeend', temp);
+                });
+                Predmety.forEach((predmet) => {
+                    console.log(predmet)
+                    let [id,rocnik, meno, ucitel] = predmet;
                     let rowHTML = `    <tr>
                            <td><input type="checkbox" value="${id}"></td>
                            <td>${id}</td>
                            <td>${meno}</td>
-                           <td>${role}</td>
+                           <td>${ucitel}</td>
+                           <td>${rocnik}</td>
                            </tr>`;
                     tbody.insertAdjacentHTML('beforeend', rowHTML);
                 });
+                filterRocnikyPredmetu();
             });
         } else {
-            sendRequest('/Triedy/getZiaci', 'POST', ({rocnik:rocnik}), (osoby)=> {
-                document.getElementById("meno").textContent = "Meno Priezvisko";
-                document.getElementById("role").textContent = "Práva";
+            sendRequest('/Triedy/getPredmetyRocniku', 'GET', null, (data)=> {
                 tbody.innerHTML = '';
-                console.log(rocnik);
-                console.log(osoby);
-                osoby.forEach((osoba) => {
-                    let [id, meno, role] = osoba;
+                select.innerHTML = '';
+                let Predmety = data['predmety'];
+                let Rocniky = data['rocniky'];
+                Rocniky.forEach((rocniky) =>{
+                    let temp;
+                    if (rocniky[1] === rocnik){
+                        temp = `<option value="${rocniky[1]}" selected>${rocniky[1]}</option>`;
+                    }else {
+                        temp = `<option value="${rocniky[1]}">${rocniky[1]}</option>`;
+                    }
+                    select.insertAdjacentHTML('beforeend', temp);
+                });
+                Predmety.forEach((predmet) => {
+                    let [id,rocnik, meno, ucitel] = predmet;
                     let checkedAttribute = '';
                     if (vyberPredmety.includes(id)) {
                         checkedAttribute = "checked";
                     }
-                    let rowHTML = `<tr>
-                        <td><input type="checkbox" value="${id}" ${checkedAttribute}></td>
-                        <td>${id}</td>
-                        <td>${meno}</td>
-                        <td>${role}</td>
-                        </tr>`;
+                    let rowHTML = `    <tr>
+                           <td><input type="checkbox" value="${id}" ${checkedAttribute}></td>
+                           <td>${id}</td>
+                           <td>${meno}</td>
+                           <td>${ucitel}</td>
+                           <td>${rocnik}</td>
+                           </tr>`;
                     tbody.insertAdjacentHTML('beforeend', rowHTML);
                 });
+                filterRocnikyPredmetu();
             });
         }
         document.getElementById('vyberTriedny_ZiaciSaveButton').onclick = function () {
@@ -258,6 +297,7 @@ function ZadanePredmety(typ, rocnik, vyberPredmety) {
                 document.getElementById('ZadanePredmety').value = "None";
             }
             modal.style.display = 'none';
+            select.style.display = 'none';
         };
     };
 }
@@ -272,10 +312,11 @@ function Ucebna(typ, vyberUcebne) {
             document.getElementById('rocnik').style.display = "block";
             tbody.removeEventListener('click', (tBodyListener));
         };
+        document.getElementById("meno").textContent = "Názov";
+        document.getElementById("role").style.display = "table-cell";
+        document.getElementById("role").textContent = "Skratka";
         if (typ === 'add') {
             sendRequest('/Predmety/getUcebne', 'GET', null, (ucebne)=> {
-                document.getElementById("meno").textContent = "Názov";
-                document.getElementById("role").textContent = "Skratka";
                 tbody.innerHTML = '';
                 ucebne.forEach((ucebna) => {
                     let [id, nazov, skratka] = ucebna;
@@ -292,10 +333,9 @@ function Ucebna(typ, vyberUcebne) {
             });
         } else {
             sendRequest('/Predmety/getUcebne', 'GET', null, (ucebne)=> {
-                document.getElementById("meno").textContent = "Názov";
-                document.getElementById("role").textContent = "Skratka";
                 tbody.innerHTML = '';
                 ucebne.forEach((ucebna) => {
+                    console.log(ucebna)
                     let [id, nazov, skratka] = ucebna;
                     let checkedAttribute = '';
                     if (vyberUcebne.includes(id)) {
@@ -335,72 +375,78 @@ function Ucebna(typ, vyberUcebne) {
         };
     };
 }
-
-document.getElementById('addTriedaButton').onclick = function () {
-    document.getElementById('addTriedu').style.display = 'block';
-    document.getElementById('Nazov').value = "";
-    document.getElementById('Triedny').value = "None";
-    document.getElementById('ZadanyZiaci').value = "None";
-    document.getElementById('Ucebna').value = "None";
-    document.querySelector(".rights-selector.addTriedu").value = "None";
-    document.getElementsByClassName('addUcebnuclose')[0].onclick = function() {
-        document.getElementById('addTriedu').style.display =  'none';
-        document.getElementById('Triedny').removeEventListener('click', TriednyListener);
-        document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
-        document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
-        document.getElementById('Ucebna').removeEventListener('click', UcebnaListener);
-        document.getElementById('ziaci').style.display = 'none';
-    };
-    let vyberTriedneho = [];
-    let vyberZiakov = [];
-    let vyberUcebne = [];
-    let vyberPredmety = [];
-    let rocnik = '';
-    document.querySelector(".rights-selector.addTriedu").onchange = function () {
-        rocnik = document.querySelector(".rights-selector.addTriedu").value;
-        if (rocnik === 'None') {
+if (document.getElementById('addTriedaButton')) {
+    document.getElementById('addTriedaButton').onclick = function () {
+        document.getElementById('addTriedu').style.display = 'block';
+        document.getElementById('Nazov').value = "";
+        document.getElementById('Triedny').value = "None";
+        document.getElementById('ZadanyZiaci').value = "None";
+        document.getElementById('Ucebna').value = "None";
+        document.querySelector(".rights-selector.addTriedu").value = "None";
+        document.getElementsByClassName('addUcebnuclose')[0].onclick = function () {
+            document.getElementById('addTriedu').style.display = 'none';
+            document.getElementById('Triedny').removeEventListener('click', TriednyListener);
+            document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
+            document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
+            document.getElementById('Ucebna').removeEventListener('click', UcebnaListener);
             document.getElementById('ziaci').style.display = 'none';
-            vyberZiakov.length = 0;
-            document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
-            document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
-        } else {
-            document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
-            document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
-            vyberZiakov.length = 0;
-            vyberPredmety.length = 0;
-            console.log(rocnik)
-            document.getElementById('ZadanyZiaci').value = "None";
-            document.getElementById('ZadanePredmety').value = "None";
-            ZadanyZiaciListener = ZadanyZiaci('add', rocnik, vyberZiakov);
-            ZadanePredmetyListener = ZadanePredmety('add', rocnik, vyberPredmety);
-            document.getElementById('ZadanyZiaci').addEventListener('click', ZadanyZiaciListener);
-            document.getElementById('ZadanePredmety').addEventListener('click', ZadanePredmetyListener);
-            document.getElementById('ziaci').style.display = 'block';
-            document.getElementById('predmety').style.display = 'block';
+            document.getElementById('predmety').style.display = 'none';
+        };
+        let vyberTriedneho = [];
+        let vyberZiakov = [];
+        let vyberUcebne = [];
+        let vyberPredmety = [];
+        let rocnik = '';
+        document.querySelector(".rights-selector.addTriedu").onchange = function () {
+            rocnik = document.querySelector(".rights-selector.addTriedu").value;
+            if (rocnik === 'None') {
+                document.getElementById('ziaci').style.display = 'none';
+                vyberZiakov.length = 0;
+                document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
+                document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
+            } else {
+                document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
+                document.getElementById('ZadanePredmety').removeEventListener('click', ZadanePredmetyListener);
+                vyberZiakov.length = 0;
+                vyberPredmety.length = 0;
+                document.getElementById('ZadanyZiaci').value = "None";
+                document.getElementById('ZadanePredmety').value = "None";
+                ZadanyZiaciListener = ZadanyZiaci('add', rocnik, vyberZiakov);
+                ZadanePredmetyListener = ZadanePredmety('add', rocnik, vyberPredmety);
+                document.getElementById('ZadanyZiaci').addEventListener('click', ZadanyZiaciListener);
+                document.getElementById('ZadanePredmety').addEventListener('click', ZadanePredmetyListener);
+                document.getElementById('ziaci').style.display = 'block';
+                document.getElementById('predmety').style.display = 'block';
+            }
         }
-    }
-    TriednyListener = Triedny('add', vyberTriedneho);
+        TriednyListener = Triedny('add', vyberTriedneho);
 
-    UcebnaListener = Ucebna('add', vyberUcebne);
-    document.getElementById('Triedny').addEventListener('click', TriednyListener);
-    document.getElementById('Ucebna').addEventListener('click', UcebnaListener);
+        UcebnaListener = Ucebna('add', vyberUcebne);
+        document.getElementById('Triedny').addEventListener('click', TriednyListener);
+        document.getElementById('Ucebna').addEventListener('click', UcebnaListener);
 
-    document.getElementById('addTrieduSave').onclick = function () {
-        let nazov = document.getElementById('Nazov').value;
-        var rocnik = document.querySelector(".rights-selector.addTriedu").value;
-        if (nazov) {
-            sendRequest('/Triedy/saveTriedu', 'POST', ({nazov:nazov, vyberTriedneho:vyberTriedneho, vyberZiakov:vyberZiakov, vyberUcebne:vyberUcebne, rocnik:rocnik}), (data) => {
-                if (data) {
-                    window.location.reload();
-                } else {
-                    alert("Zadaný názov už existuje");
-                }
-            });
-        } else {
-            alert("Nezadali ste žiadny Názov");
-        }
+        document.getElementById('addTrieduSave').onclick = function () {
+            let nazov = document.getElementById('Nazov').value;
+            var rocnik = document.querySelector(".rights-selector.addTriedu").value;
+            if (nazov) {
+                sendRequest('/Triedy/saveTriedu', 'POST', ({
+                    nazov: nazov, vyberTriedneho: vyberTriedneho, vyberZiakov: vyberZiakov,
+                    vyberUcebne: vyberUcebne, rocnik: rocnik, vyberPredmety: vyberPredmety
+                }), (data) => {
+                    if (data) {
+                        window.location.reload();
+                    } else if(!data) {
+                        alert("Zadaný názov už existuje");
+                    } else {
+                        alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                    }
+                });
+            } else {
+                alert("Nezadali ste žiadny Názov");
+            }
+        };
     };
-};
+}
 
 const editTriedu = document.getElementsByClassName("EditTrieda")
 for (let i = 0; i < editTriedu.length; i++) {
@@ -414,18 +460,23 @@ for (let i = 0; i < editTriedu.length; i++) {
             document.getElementById('Ucebna').removeEventListener('click', UcebnaListener);
             document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
             document.getElementById('ziaci').style.display = 'none';
+            document.getElementById('predmety').style.display = 'none';
         };
         let vyberTriedneho = [];
         let vyberZiakov = [];
         let vyberUcebne = [];
+        let vyberPredmety = [];
         let ziaci = [];
+        let predmety = [];
         sendRequest('/Triedy/getTriedu', 'POST', (idCell), (data) => {
             document.getElementById('Nazov').value = data['nazov'];
+            let permission = data['user_permissions'];
             let rocnik = '';
             if (data['rocnik'].length >0) {
                 rocnik = data['rocnik'][0][0];
                 document.querySelector(".rights-selector.addTriedu").value = data['rocnik'][0][0];
                 document.getElementById('ziaci').style.display = 'block';
+                document.getElementById('predmety').style.display = 'block';
             }
             if (data['triedny'].length > 0) {
                 document.getElementById('Triedny').value = data['triedny'][0][1];
@@ -433,7 +484,16 @@ for (let i = 0; i < editTriedu.length; i++) {
             }else {
                 document.getElementById('Triedny').value = "None";
             }
-            data['ziaci'].forEach((ziak) => {
+            data['predmety'].forEach((predmet)=> {
+                vyberPredmety.push(predmet[0]);
+                predmety.push(predmet[1]);
+            });
+            if (predmety.length > 0) {
+                document.getElementById('ZadanePredmety').value = predmety.join(', ');
+            } else {
+                document.getElementById('ZadanePredmety').value = "None";
+            }
+            data['ziaci'].forEach((ziak)=> {
                 vyberZiakov.push(ziak[0]);
                 ziaci.push(ziak[1]);
             });
@@ -452,30 +512,56 @@ for (let i = 0; i < editTriedu.length; i++) {
                 rocnik = document.querySelector(".rights-selector.addTriedu").value;
                 if (rocnik === 'None') {
                     document.getElementById('ziaci').style.display = 'none';
+                    document.getElementById('predmety').style.display = 'none';
                     vyberZiakov.length = 0;
+                    vyberPredmety.length = 0;
                     document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
                 } else {
                     document.getElementById('ZadanyZiaci').removeEventListener('click', ZadanyZiaciListener);
                     vyberZiakov.length = 0;
+                    vyberPredmety.length = 0;
                     document.getElementById('ZadanyZiaci').value = "None";
+                    document.getElementById('ZadanePredmety').value = "None";
                     ZadanyZiaciListener = ZadanyZiaci(idCell, rocnik, vyberZiakov);
                     document.getElementById('ZadanyZiaci').addEventListener('click', ZadanyZiaciListener);
+                    ZadanePredmetyListener = ZadanePredmety(idCell, rocnik, vyberPredmety);
+                    document.getElementById('ZadanePredmety').addEventListener('click', ZadanePredmetyListener);
                     document.getElementById('ziaci').style.display = 'block';
+                    document.getElementById('predmety').style.display = 'block';
                 }
             };
             TriednyListener = Triedny(idCell, vyberTriedneho);
             UcebnaListener = Ucebna(idCell, vyberUcebne);
             ZadanyZiaciListener = ZadanyZiaci(idCell, rocnik, vyberZiakov);
-            document.getElementById('Triedny').addEventListener('click', TriednyListener);
-            document.getElementById('Ucebna').addEventListener('click', UcebnaListener);
-            document.getElementById('ZadanyZiaci').addEventListener('click', ZadanyZiaciListener);
+            ZadanePredmetyListener = ZadanePredmety(idCell, rocnik, vyberPredmety);
+            if (permission.includes(35)) {
+                document.getElementById('Triedny').addEventListener('click', TriednyListener);
+            }
+            if (permission.includes(38)) {
+                document.getElementById('Ucebna').addEventListener('click', UcebnaListener);
+            }
+            if (permission.includes(36)) {
+                document.getElementById('ZadanyZiaci').addEventListener('click', ZadanyZiaciListener);
+            }
+            if (permission.includes(37)) {
+                document.getElementById('ZadanePredmety').addEventListener('click', ZadanePredmetyListener);
+            }
+            document.getElementById('Nazov').disabled = !permission.includes(34);
+            document.getElementsByClassName('rights-selector addTriedu')[0].disabled = !permission.includes(39);
+
             document.getElementById('addTrieduSave').onclick = function () {
                 let nazov = document.getElementById('Nazov').value;
                 var rocnik = document.querySelector(".rights-selector.addTriedu").value;
                 if (nazov) {
-                    sendRequest('/Triedy/updateTriedu', 'POST', ({id: idCell, nazov:nazov, vyberTriedneho:vyberTriedneho, vyberZiakov:vyberZiakov, vyberUcebne:vyberUcebne, rocnik:rocnik}), (data)=> {
+                    sendRequest('/Triedy/updateTriedu', 'POST', ({id: idCell, nazov:nazov, vyberTriedneho:vyberTriedneho,
+                        vyberZiakov:vyberZiakov, vyberUcebne:vyberUcebne, rocnik:rocnik, vyberPredmety:vyberPredmety}), (data)=> {
                     if (data){
                         window.location.reload();
+                    } else if (!data) {
+                        alert("Neopravnená zmena názvu");
+                        window.location.reload();
+                    } else {
+                        alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
                     }
                 });
                 } else {
@@ -493,6 +579,8 @@ for (let i = 0; i < delTriedu.length; i++) {
         sendRequest('/Triedy/delTriedu', 'POST', (idCell), (data)=> {
            if (data) {
                window.location.reload()
+           } else {
+               alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
            }
         });
     });

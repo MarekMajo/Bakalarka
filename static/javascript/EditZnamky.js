@@ -1,3 +1,4 @@
+let zoznamZnamokZpercenta = [];
 document.getElementById('triedy').onchange = function () {
     let trieda_id = document.getElementById('triedy').value;
     let predmetSelect = document.getElementById('Predmety');
@@ -17,13 +18,20 @@ document.getElementById('triedy').onchange = function () {
 
 document.getElementById('Predmety').onchange = function () {
     let nastavenie = document.getElementById('Nastavenie');
-    if (document.getElementById('Predmety').value !== "") {
-        nastavenie.disabled = false;
-        setTable(document.getElementById('Predmety').value);
+    let polRokSet = document.getElementById('PolRokSet');
+    let predmet = document.getElementById('Predmety').value
+    if (predmet !== "") {
+        polRokSet.disabled = false;
+        Reload();
     } else {
         nastavenie.disabled = true;
+        polRokSet.disabled = true;
+        window.location.href = `/EditZnamky`;
     }
 };
+document.getElementById('PolRokSet').onchange = function () {
+    Reload();
+}
 
 document.getElementById('Nastavenie').onclick = function () {
     let modalSetting = document.getElementById('EditKategorie');
@@ -33,21 +41,49 @@ document.getElementById('Nastavenie').onclick = function () {
     };
     let id = document.getElementById('Predmety').value;
     let trieda_id = document.getElementById('triedy').value;
-    sendRequest('/EditZnamky/GetKategoriePredmetu', 'POST', ({id:id, trieda_id:trieda_id}), (kategorie) => {
+    let polrok = document.getElementById('PolRokSet').value;
+    sendRequest('/EditZnamky/GetKategoriePredmetu', 'POST', ({id:id, trieda_id:trieda_id, polrok:polrok}), (kategorie) => {
         let tbodyZnamky = document.querySelector('#EditKategorie .modal-table tbody');
         tbodyZnamky.innerHTML = '';
         kategorie.forEach((kategoria) => {
             let rowHTML = `<tr>
                   <td>${kategoria[0]}</td>
-                  <td>${kategoria[2]}</td>
                   <td>${kategoria[3]}</td>
                   <td>${kategoria[4]}</td>
                   <td>${kategoria[5]}</td>
+                  <td>${kategoria[6]}</td>
+                  <td><button class="pokus">Vymazať</button></td>
                 </tr>`;
             tbodyZnamky.insertAdjacentHTML('beforeend', rowHTML);
         });
+        let delModal = document.getElementById("delKategoriModal");
+        let spanDelClose = document.getElementsByClassName("delKategoriModalclose")[0];
+        const delKatbtn = document.getElementsByClassName("pokus");
+        for (let i = 0; i < delKatbtn.length; i++) {
+            delKatbtn[i].addEventListener("click", function() {
+                delModal.style.display = "block";
+                var idCell = this.closest('tr').getElementsByTagName('td')[0].textContent;
+                document.getElementById('delKategoriSaveButton').onclick = function () {
+                    sendRequest('/EditZnamky/DelKategoriePredmetu', 'POST', {id:idCell, polrok:polrok}, (data) => {
+                        if (data['neautorizovany']){
+                            alert("Úprava zamietnutna z dôvodu neautorizovaného prístupu");
+                            Reload();
+                        }
+                        if (data['uzavierka']){
+                            alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                            Reload();
+                        }
+                       if (data){
+                           Reload();
+                       }
+                    });
+                };
+            });
+        }
+        spanDelClose.onclick = function () {
+            delModal.style.display = "none";
+        };
     });
-
     document.getElementById('addKategoriubtn').onclick = function () {
         let vyhodnotenie = [];
         document.getElementById('kategoriaName').value = '';
@@ -159,6 +195,11 @@ document.getElementById('Nastavenie').onclick = function () {
                 let max = document.getElementById('zadanie_maxBodov').value;
                 if (document.getElementById('setVaha').value === "zadam") {
                     vaha = document.getElementById('zadanie_vahy').value;
+                    if(vaha <=0) {
+                        alert("Zle zadaná váha");
+                        return
+                    }
+                    vaha = vaha / 20;
                 } else {
                     vaha = document.getElementById('setVaha').value;
                 }
@@ -167,7 +208,15 @@ document.getElementById('Nastavenie').onclick = function () {
                 } else if (typ === 'percenta') {
                     max = 100;
                 }
-                sendRequest('/EditZnamky/SaveKategoriu', 'POST', ({predmet_id:id,nazov:nazov, typ:typ, vaha:vaha, vyhodnotenie:vyhodnotenie, max:max, trieda_id:trieda_id}), (data)=> {
+                sendRequest('/EditZnamky/SaveKategoriu', 'POST', ({predmet_id:id,nazov:nazov, typ:typ, vaha:vaha, vyhodnotenie:vyhodnotenie, max:max, trieda_id:trieda_id, polrok:polrok}), (data)=> {
+                    if (data['neautorizovany']){
+                        alert("Úprava zamietnutna z dôvodu neautorizovaného prístupu");
+                        Reload();
+                    }
+                    if (data['uzavierka']){
+                        alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                        Reload();
+                    }
                     if (data) {
                         Reload();
                     } else {
@@ -179,7 +228,6 @@ document.getElementById('Nastavenie').onclick = function () {
             }
         };
     };
-
 };
 function vypocetRozmedzi(maxBodov) {
     let pocetZnamek = 5;
@@ -195,9 +243,38 @@ function vypocetRozmedzi(maxBodov) {
     return rozmedzia;
 }
 
+function vypocitatZnamku(zoznam, kategoria, hodnota) {
+    for (let item of zoznam) {
+        if (item[0] === kategoria) {
+            if (item[2] <= parseFloat(hodnota) && item[3] >= parseFloat(hodnota)) {
+                return parseInt(item[1]);
+            }
+        }
+    }
+    return '-';
+}
+
+function priemer(znamky) {
+    let celkovaVaha = 0;
+    let sucetZnamok = 0;
+    znamky.forEach(znamka => {
+        const vaha = parseFloat(znamka[0]);
+        const hodnota = znamka[1];
+        if(hodnota !== "-") {
+            celkovaVaha += vaha;
+            sucetZnamok += vaha * parseFloat(hodnota);
+        }
+    });
+    if (celkovaVaha === 0) {
+        return "-";
+    }
+    let priemer = sucetZnamok / celkovaVaha;
+    return priemer.toFixed(2);
+}
 function setTable(predmet) {
     let trieda_id = document.getElementById('triedy').value;
-    sendRequest('/EditZnamky/GetKategoriePredmetu', 'POST', ({id:predmet, trieda_id:trieda_id}), (kategorie) => {
+    let polrok = document.getElementById('PolRokSet').value;
+    sendRequest('/EditZnamky/GetKategoriePredmetu', 'POST', ({id:predmet, trieda_id:trieda_id, polrok:polrok}), (kategorie) => {
         let theadZnamky = document.querySelector('#hlavnaTabulka .table thead');
         theadZnamky.innerHTML = '';
         let rowHTML = `
@@ -207,9 +284,9 @@ function setTable(predmet) {
                 <th>Meno a priezvisko</th>`;
         kategorie.forEach((kategoria) => {
             if (kategoria[4] === 'body') {
-                rowHTML += `<th>${kategoria[3]} <span style="font-size: xx-small; color: grey;">(${kategoria[4]}) (${kategoria[5]}) MaxBodov:(${kategoria[6]})</span></th>`;
+                rowHTML += `<th title="${kategoria[3]} (${kategoria[4]}) (${kategoria[5]}) MaxBodov:(${kategoria[6]})">${kategoria[3]} <span style="font-size: xx-small; color: grey;">(${kategoria[4]}) (${kategoria[5]}) MaxBodov:(${kategoria[6]})</span></th>`;
             } else {
-                rowHTML += `<th>${kategoria[3]} <span style="font-size: xx-small; color: grey;">(${kategoria[4]}) (${kategoria[5]})</span></th>`;
+                rowHTML += `<th title="${kategoria[3]} (${kategoria[4]}) (${kategoria[5]})">${kategoria[3]} <span style="font-size: xx-small; color: grey;">(${kategoria[4]}) (${kategoria[5]})</span></th>`;
             }
         });
         rowHTML += `<th style="width: 5%">Priemer</th></tr>`;
@@ -218,7 +295,7 @@ function setTable(predmet) {
     });
 }
 
-function SetPredmetySelect(trieda_id, predmetSelect, zvPredmet) {
+function SetPredmetySelect(trieda_id, predmetSelect, zvPredmet, polrok) {
     sendRequest('/EditZnamky/GetPredmety', 'POST', (trieda_id), (predmety) => {
         predmetSelect.disabled = false;
         predmetSelect.innerHTML = '';
@@ -233,6 +310,8 @@ function SetPredmetySelect(trieda_id, predmetSelect, zvPredmet) {
             predmetSelect.insertAdjacentHTML('beforeend', rowHTML);
         });
         if (zvPredmet) {
+            document.getElementById('PolRokSet').disabled = false;
+            document.getElementById('PolRokSet').value = parseInt(polrok);
             setTable(zvPredmet);
         }
     });
@@ -241,17 +320,24 @@ function SetPredmetySelect(trieda_id, predmetSelect, zvPredmet) {
 function Reload() {
     let trieda = document.getElementById('triedy').value;
     let predmet = document.getElementById('Predmety').value;
-    window.location.href = `/EditZnamky?trieda=${trieda}&predmet=${predmet}`;
+    let polRok = document.getElementById('PolRokSet').value;
+    window.location.href = `/EditZnamky?trieda=${trieda}&predmet=${predmet}&polRok=${polRok}`;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     let urlParams = new URLSearchParams(window.location.search);
     let trieda = urlParams.get('trieda');
     let predmet = parseInt(urlParams.get('predmet'));
+    let polRok = urlParams.get('polRok');
     let predmetSelect = document.getElementById('Predmety');
-    if (trieda && predmet) {
-        document.getElementById('Nastavenie').disabled = false;
-        SetPredmetySelect(trieda, predmetSelect, predmet);
+    if (trieda && predmet && (polRok === '0' || polRok === '1')) {
+        sendRequest('/EditZnamky/CanEditZnamky', 'POST', (predmet), (data) => {
+            if (data) {
+                enableGradeEditing();
+            }
+            document.getElementById('Nastavenie').disabled = !data;
+        });
+        SetPredmetySelect(trieda, predmetSelect, predmet, polRok);
     }
 });
 
@@ -260,10 +346,13 @@ function setZiaci(predmet) {
         predmet = 'None';
     }
     let trieda = document.getElementById('triedy').value;
-    sendRequest('/EditZnamky/GetZiakovPredmetu', 'POST', {predmet:predmet, trieda_id:trieda}, (data) => {
+    let polrok = document.getElementById('PolRokSet').value;
+    sendRequest('/EditZnamky/GetZiakovPredmetu', 'POST', {predmet:predmet, trieda_id:trieda, polrok:polrok}, (data) => {
         let tbodyZnamky = document.querySelector('#hlavnaTabulka .table tbody');
         tbodyZnamky.innerHTML = '';
-        data.forEach((ziak) => {
+        zoznamZnamokZpercenta = data['znamkaZPercenta'];
+        data['final_result'].forEach((ziak) => {
+            let znamky = [];
             let rowHTML = `<tr>
                 <td class="box"><input type="checkbox" name="selected"></td>
                 <td class="id-column">${ziak.osoba_id}</td>
@@ -279,47 +368,51 @@ function setZiaci(predmet) {
                     Object.entries(kategoriaData).forEach(([key, value]) => {
                         i++;
                         const isLastItem = i === Object.keys(kategoriaData).length;
-                        znamkyHTML += `<a value="${key}">${value}</a>`;
-                        znamkyHTML += `<a style="display: none">${isLastItem ? '' : '  ,  '}</a> `;
+                        if (th.textContent.trim().split(" (")[1].split(")")[0] !== 'znamka') {
+                            let hodnota = vypocitatZnamku(zoznamZnamokZpercenta, kategoriaText, value);
+                            znamky.push([th.textContent.trim().split(" (")[2].split(")")[0], hodnota])
+                            znamkyHTML += `<a value="${key}">${value}</a>`;
+                            znamkyHTML += `<span style="font-size: xx-small; color: grey;">> ${hodnota}</span>`;
+                            znamkyHTML += `<a style="display: none">${isLastItem ? '' : '  ,  '}</a> `;
+                        } else {
+                            znamky.push([th.textContent.trim().split(" (")[2].split(")")[0], value])
+                            znamkyHTML += `<a value="${key}">${value}</a>`;
+                            znamkyHTML += `<a style="display: none">${isLastItem ? '' : '  ,  '}</a> `;
+                        }
+
                     });
                     rowHTML += `<td>${znamkyHTML}</td>`;
                 } else {
                     rowHTML += `<td></td>`;
                 }
             });
-            rowHTML += `<td></td></tr>`;
+
+            rowHTML += `<td>${priemer(znamky)}</td></tr>`;
             tbodyZnamky.innerHTML += rowHTML;
         });
-        enableGradeEditing();
     });
 }
 
 function enableGradeEditing() {
     let predmet = document.getElementById('Predmety').value;
-    sendRequest('/EditZnamky/CanEditZnamky', 'POST', (predmet), (data) => {
-        if (data) {
-            const table = document.querySelector('#hlavnaTabulka .table tbody');
+    const table = document.querySelector('#hlavnaTabulka .table tbody');
     table.addEventListener('click', function(event) {
         let target = event.target;
+        let totalColumns = document.querySelector('#hlavnaTabulka .table thead tr').children.length;
         let parentTd = target.tagName === 'A' ? target.closest('td') : (target.tagName === 'TD' ? target : null);
-
-        if (parentTd && !parentTd.querySelector('input')) {
+        if (parentTd && !parentTd.querySelector('input') && parentTd.cellIndex > 2 && parentTd.cellIndex < totalColumns -1) {
             let originalContent = target.tagName === 'A' ? target.textContent.trim() : "";
             let originalValue = target.getAttribute('value') || originalContent;
-
             let input = document.createElement('input');
             input.type = 'text';
             input.value = originalContent;
             input.className = 'grade-edit';
             input.style.width = '10%';
-
             if (target.tagName === 'A') {
                 target.style.display = 'none';
             }
-
             parentTd.appendChild(input);
             input.focus();
-
             let columnType = 'znamka';
             let maxPoints = 0;
             let headerText = document.querySelector(`#hlavnaTabulka .table thead tr th:nth-child(${parentTd.cellIndex + 1})`).textContent;
@@ -329,10 +422,8 @@ function enableGradeEditing() {
             } else if (headerText.includes('(percenta)')) {
                 columnType = 'percenta';
             }
-
             input.addEventListener('blur', function () {
                 let newValue = input.value.trim();
-
                 if (!isValidValue(columnType, newValue, maxPoints)) {
                     alert(`Neplatná hodnota pre typ "${columnType}".`);
                     parentTd.removeChild(input);
@@ -341,7 +432,6 @@ function enableGradeEditing() {
                     }
                     return;
                 }
-
                 if (newValue === originalContent && target.tagName === 'A') {
                     target.style.display = '';
                 } else if (newValue) {
@@ -374,8 +464,6 @@ function enableGradeEditing() {
             });
         }
     });
-        }
-    });
 }
 
 function isValidValue(type, value, maxPoints = null) {
@@ -392,6 +480,23 @@ function isValidValue(type, value, maxPoints = null) {
         return !isNaN(numValue) && numValue >= 0 && numValue <= 100;
     }
     return false;
+}
+
+document.getElementById('save').onclick = function () {
+    let predmet = document.getElementById('Predmety').value;
+    let polrok = document.getElementById('PolRokSet').value
+    sendRequest('/EditZnamky/CanEditZnamky', 'POST', (predmet), (data) => {
+        if (data) {
+            let upraveneZnamky = getGradeChanges();
+            sendRequest('/EditZnamky/SaveZnamky', 'POST', {predmet, polrok, upraveneZnamky}, (item) => {
+                if (item['uzavierka']){
+                    alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                    Reload();
+                }
+                Reload();
+            });
+        }
+    });
 }
 
 function getGradeChanges() {
@@ -428,4 +533,3 @@ function getGradeChanges() {
         add: addList
     };
 }
-

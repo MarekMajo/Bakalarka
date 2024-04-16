@@ -30,7 +30,7 @@ class ResetHesla():
         email = request.form['email']
         db = mysql.connector.connect(**self.adress)
         cursor = db.cursor()
-        cursor.execute(f"SELECT * FROM osoba WHERE osoba_id = '{id}' AND email = '{email}'")
+        cursor.execute("SELECT * FROM osoba WHERE osoba_id = %s AND email = %s", (id, email))
         resoult = cursor.fetchone()
         cursor.close()
         db.close()
@@ -70,7 +70,7 @@ class ResetHesla():
             session.clear()
             db = mysql.connector.connect(**self.adress)
             cursor = db.cursor()
-            cursor.execute(f"update prihlasovacie_udaje set pr_heslo = '{noveheslo}' where login_id = '{id}'")
+            cursor.execute("update prihlasovacie_udaje set pr_heslo = %s where login_id = %s", (noveheslo, id))
             db.commit()
             cursor.close()
             db.close()

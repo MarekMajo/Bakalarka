@@ -1,314 +1,110 @@
-{% extends "menu.html" %}
-
+{% extends "mainHtml.html" %}
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}" >
-<style>
-  .rozvrh {
-    margin: 0 auto;
-    border-collapse: collapse;
-}
-
-.rozvrh th, .rozvrh td {
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
-    text-align: center;
-}
-
-.rozvrh th {
-    background-color: #f2f2f2;
-}
-
-.rozvrh td {
-    padding: 5px;
-}
-
-.predmetDuo {
-    position: relative;
-    width: 100px;
-    height: 200px;
-    text-align: center;
-    border: 1px solid black;
-}
-
-.predmetDuo .predmet-kontajner {
-    position: absolute;
-    width: 100%;
-    height: 50%;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.predmetDuo .predmet-kontajner:first-child {
-    top: 0;
-}
-
-.predmetDuo .predmet-kontajner:last-child {
-    top: 50%;
-    border-top: 1px solid #ccc;
-}
-
-.predmetDuo .predmet-kontajner .nazov {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 15px;
-    align-self: flex-start;
-}
-
-.predmetDuo .predmet-kontajner .dolny-pravy-roh {
-    position: absolute;
-    bottom: -6px;
-    right: 5px;
-    font-size: 12px;
-}
-
-.predmetDuo .predmet-kontajner .horny-pravy-roh {
-    position: absolute;
-    top: -6px;
-    right: 5px;
-    font-size: 12px;
-}
-
-.predmetSolo {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    text-align: center;
-}
-
-.predmetSolo .nazov {
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.predmetSolo .dolny-pravy-roh {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 12px;
-    font-weight: normal;
-}
-
-.predmetSolo .horny-pravy-roh {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 12px;
-    font-weight: normal;
-}
-.predmetTriple {
-    position: relative;
-    width: 100px;
-    height: 200px;
-    text-align: center;
-    border: 1px solid black;
-}
-
-.predmetTriple .predmet-kontajner {
-    position: absolute;
-    width: 100%;
-    height: 50%;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.predmetTriple .predmet-kontajner:nth-child(1) {
-    top: 0;
-}
-
-.predmetTriple .predmet-kontajner:nth-child(2) {
-    border-top: 1px solid #ccc;
-    top: 33%;
-}
-
-.predmetTriple .predmet-kontajner:nth-child(3) {
-    top: 66%;
-    border-top: 1px solid #ccc;
-}
-
-.predmetTriple .predmet-kontajner .nazov {
-    font-size: 16px;
-    font-weight: bold;
-    align-self: center;
-}
-
-.predmetTriple .predmet-kontajner .horny-lavy-roh {
-    position: absolute;
-    top: -6px;
-    right: 5px;
-    font-size: 12px;
-}
-
-.predmetTriple .predmet-kontajner .horny-pravy-roh {
-    position: absolute;
-    top: -6px;
-    left: 5px;
-    font-size: 12px;
-}
-</style>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/Rozvrh.css') }}" >
 {% endblock %}
-
 {% block title %}Rozvrh{% endblock %}
-
 {% block content %}
-
 <div class="buttons-container" style="justify-content: center">
-  <select class="rights-selector" onchange="setTrieda()" id="triedy">
-    {% if zvolena == None %}
-      <option value="" selected>Vyberte triedu</option>
-    {% else %}
-      <option value="">Vyberte triedu</option>
-    {% endif %}
-    {% for trieda in triedy %}
-      {% if zvolena == trieda[0] %}
+    <select class="rights-selector" id="triedy">
+        {% if zvolena == None %}
+        <option value="" selected>Vyberte triedu</option>
+        {% else %}
+        <option value="">Vyberte triedu</option>
+        {% endif %}
+        {% for trieda in triedy %}
+        {% if zvolena == trieda[0] %}
         <option value="{{ trieda[0] }}" selected>{{ trieda[1] }}</option>
-      {% else %}
+        {% else %}
         <option value="{{ trieda[0] }}">{{ trieda[1] }}</option>
-      {% endif %}
+        {% endif %}
+        {% endfor %}
+    </select>
+
+    <select class="rights-selector" id="ucitel">
+        <option value="">Vyberte Učiteľa</option>
+        {% for ucitelel in ucitelia %}
+        <option value="{{ ucitelel[0] }}">{{ ucitelel[1] }}</option>
+        {% endfor %}
+    </select>
+
+    <select class="rights-selector" id="ucebne">
+        <option value="">Vyberte Ucebňu</option>
+        {% for ucebna in ucebne %}
+            <option value="{{ ucebna[0] }}">{{ ucebna[1] }}</option>
+        {% endfor %}
+    </select>
+
+    <select class="rights-selector" id="PolRokSet">
+        <option value="0">Prvý Polrok</option>
+        <option value="1">Druhý Polrok</option>
+    </select>
+    {% for opravnenie in opravnenia %}
+    {% if opravnenie == 47 %}
+    <a href="/Edit_Rozvrh" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Upraviť</a>
+    {% endif %}
     {% endfor %}
-  </select>
-  <select class="rights-selector" onchange="setTrieda()" id="PolRokSet">
-    <option value="0">Prvý Polrok</option>
-    <option value="1">Druhý Polrok</option>
-  </select>
-  <a href="/Edit_Rozvrh" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Upraviť</a>
 </div>
 <table class="rozvrh">
-  <tr>
-    <th></th>
-    <th>7:45 - 8:30</th>
-    <th>8:40 - 9:25</th>
-    <th>9:40 - 10:25</th>
-    <th>10:45 - 11:30</th>
-    <th>11:40 - 12:25</th>
-    <th>12:30 - 13:15</th>
-    <th>13:30 - 14:15</th>
-      </tr>
-  <tr>
-    <th id="den=1">Pondelok</th>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-  </tr>
-  <tr>
-    <th id="den=2">Utorok</th>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-  </tr>
-  <tr>
-    <th id="den=3">Streda</th>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
+    <tr id="hodiny">
+        <th></th>
+        <th>7:45 - 8:30</th>
+        <th>8:40 - 9:25</th>
+        <th>9:40 - 10:25</th>
+        <th>10:45 - 11:30</th>
+        <th>11:40 - 12:25</th>
+        <th>12:30 - 13:15</th>
+        <th>13:30 - 14:15</th>
     </tr>
-  <tr>
-    <th  id="den=4">Štvrtok</th>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
+    <tr>
+        <th id="den=1">Pondelok</th>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
     </tr>
-  <tr>
-    <th  id="den=5">Piatok</th>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
-      <td class="predmet">
-
-      </td>
+    <tr>
+        <th id="den=2">Utorok</th>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+    </tr>
+    <tr>
+        <th id="den=3">Streda</th>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+    </tr>
+    <tr>
+        <th id="den=4">Štvrtok</th>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+    </tr>
+    <tr>
+        <th id="den=5">Piatok</th>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
+        <td class="predmet"></td>
     </tr>
 </table>
 <script src="{{ url_for('static', filename='javascript/zoznam.js') }}"></script>

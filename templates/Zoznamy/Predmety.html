@@ -1,4 +1,4 @@
-{% extends "menu.html" %}
+{% extends "mainHtml.html" %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}" >
@@ -7,11 +7,23 @@
 {% block content %}
 
 <div class="buttons-container" style="justify-content: center">
-    <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
-    <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
-    <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
-    <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
-    <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+    {% for opravnenie in opravnenia %}
+        {% if opravnenie == 5 %}
+        <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
+        {% endif %}
+        {% if opravnenie == 17 %}
+        <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
+        {% endif %}
+        {% if opravnenie == 16 %}
+        <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
+        {% endif %}
+        {% if opravnenie == 15 %}
+        <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
+        {% endif %}
+        {% if opravnenie == 19 %}
+        <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+        {% endif %}
+    {% endfor %}
 </div>
 
 <div class="zoznam">
@@ -31,7 +43,11 @@
             </label>
         </div>
         <div class="buttons-container">
-            <button id="addPredmetButton" class="button">Pridať Predmet k roku {{zvolenyRok}}</button>
+            {% for opravnenie in opravnenia %}
+                {% if opravnenie == 22 %}
+                    <button id="addPredmetButton" class="button">Pridať Predmet k roku {{zvolenyRok}}</button>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <div class="table-container">
@@ -61,8 +77,14 @@
                 <td title="{{ predmet[6] }}">{{ predmet[6] }}</td>
                 <td>{{ predmet[7] }}</td>
                 <td>
-                    <button class="editPredmet">edit</button>
-                    <button class="delPredmet">Delete</button>
+                    {% for opravnenie in opravnenia %}
+                        {% if opravnenie == 24 %}
+                            <button class="editPredmet">edit</button>
+                        {% endif %}
+                        {% if opravnenie == 23 %}
+                            <button class="delPredmet">Delete</button>
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
             {% endfor %}

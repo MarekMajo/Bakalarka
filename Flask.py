@@ -40,6 +40,7 @@ class BaseServer:
         self.app.route('/dashboard')(self.check_token()(self.dashboard))
         self.app.route('/logout')(self.logout)
         self.app.route('/zmenaGlobalRoku', methods=['POST'])(self.zmenaGlobalRoku)
+        self.app.route('/getChildMenu', methods=['POST'])(self.check_token()(self.getChildMenu))
 
     def render_web(self, template_name, **kwargs):
         user_id = session.get('token')
@@ -49,6 +50,10 @@ class BaseServer:
         kwargs['opravnenia'] = self.token.get_user_permission(user_id)
         try:
             kwargs['skolskeRoky'] = self.sql.skolskeRoky()
+            temp = self.sql.getChild(self.token.getID(user_id))
+            kwargs['ucitel'] = temp['ucitel']
+            kwargs['deti'] = temp['ziaci']
+            kwargs['zvelenyView'] = session.get('zvelenyView')
             kwargs['zvolenyRok'] = session.get('zvolenyRok')
         except:
             pass
@@ -56,6 +61,10 @@ class BaseServer:
 
     def zmenaGlobalRoku(self):
         session['zvolenyRok'] = request.json
+        return jsonify({'result': True})
+
+    def getChildMenu(self):
+        session['zvelenyView'] = request.json
         return jsonify({'result': True})
 
     def check_token(self):
@@ -72,13 +81,12 @@ class BaseServer:
 
         return decorator
 
-    def check_permission(self, required_permissions):
+    def check_permission(self, pozadovanePermisie):
         def decorator(view_func):
             @wraps(view_func)
             def wrapper(*args, **kwargs):
-                token_ = session.get("token")
-                user_permissions = self.token.get_user_permission(token_)
-                if all(permission in user_permissions for permission in required_permissions):
+                user_permissions = self.token.get_user_permission(session.get("token"))
+                if all(permission in user_permissions for permission in pozadovanePermisie):
                     return view_func(*args, **kwargs)
                 else:
                     return jsonify({"authorized": False}), 403
@@ -93,12 +101,26 @@ class BaseServer:
         user = self.sql.check_login(username, password)
         if user:
             session['zvolenyRok'] = self.sql.skolskeRoky()[0][0]
-            session['token'] = self.token.vytvorToken(user[0])
-            #return redirect(url_for('showEdit_Rozvrh'))
+            token = self.token.vytvorToken(user[0])
+            session['token'] = token
+            temp = self.sql.getChild(user[0])
+            if temp['ucitel']:
+                session['zvelenyView'] = 'Učiteľ'
+            elif len(temp['ziaci']) > 0:
+                session['zvelenyView'] = temp['ziaci'][0][0]
+            else:
+                session['zvelenyView'] = user[0]
+
             return redirect(url_for('dashboard'))
+
         else:
             error = True
             return render_template('login.html', error=error)
+
+    def logout(self):
+        self.token.odstranToken(session.get('token'))
+        session.clear()
+        return redirect(url_for('Login'))
 
     def Login(self):
         return render_template('login.html')
@@ -109,12 +131,5 @@ class BaseServer:
     def index(self):
         return render_template('login.html')
 
-    def logout(self):
-        self.token.odstranToken(session.get('token'))
-        session.clear()
-        return redirect(url_for('Login'))
-
     def run(self):
-        # log = logging.getLogger('werkzeug')
-        # log.setLevel(logging.WARNING)
         self.app.run("0.0.0.0", 8888, debug=True)

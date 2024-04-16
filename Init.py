@@ -1,23 +1,25 @@
 from Flask import BaseServer
-from Pozicie_Flask import PositionsServer
-from Profil_Flask import ProfilServer
+from Pozicie_Flask import Pozicie
+from Profil_Flask import Profil
 from Uzivatelia_Flask import Uzivatelia
-from ResetHesla import ResetHesla
-from Zoznamy import Zoznamy
+from ResetHesla_Flask import ResetHesla
+from Zoznamy_Flask import Zoznamy
 from Rozvrh_Flask import Rozvrhy
-from Znamky import Znamky
-#from pokus import Pokus
+from Znamky_Flask import Znamky
+from Dochadzka_Flask import Dochadzka
+from Oznamenie_Flask import Oznamenie
 
 if __name__ == "__main__":
-    #adress = {"host": "192.168.191.200", "user": "root", "password": "admin", "database": "pokus"}
     adress = {"host": "localhost", "user": "root", "password": "admin", "database": "pokus"}
-    #adress = {"host": "192.168.191.76", "user": "root", "password": "admin", "database": "pokus"}
     base = BaseServer(adress)
     Zoznamy(base)
-    PositionsServer(base)
-    ProfilServer(base)
+    Pozicie(base)
+    Profil(base)
     Uzivatelia(base)
     ResetHesla(base)
     Rozvrhy(base)
     Znamky(base)
+    Dochadzka(base)
+    Oznamenie(base)
     base.run()
+

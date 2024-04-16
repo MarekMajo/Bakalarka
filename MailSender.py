@@ -8,7 +8,7 @@ class MailSender:
         self.mail.ehlo()
         self.mail.starttls()
         self.mail.login('ibahry2512@gmail.com', 'QfNc2RahmPnWUqxI')
-        self.emailFrom = 'EdupageLiteVersion@gmail.com'
+        self.emailFrom = 'SkolskyInformacnySystem@gmail.com'
 
 
 

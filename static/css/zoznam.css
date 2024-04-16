@@ -52,6 +52,16 @@
     max-height: 70vh;
     overflow-y: auto;
     }
+    .zoznam-Dochadzka {
+        display: none;
+        width: 80%;
+        margin: auto;
+    }
+    .table-container-Dochadzka {
+        width: 50%;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
     .table, .modal-table {
         width: 100%;
         margin-top: 5px;
@@ -81,7 +91,7 @@
     .addPredmetclose, .vyberVyucujuceho_Ucebnuclose, .vyberPredmetovclose,
     .addUcebnuclose,.vyberTriedny_Ziaciclose, .addUcebnuclose, .addRocnikModalclose
     ,.vyberZiaciclose, .delRocnikModalclose, .delUcebnuModalclose, .kopirkaModalclose, .EditRozvrhclose
-    ,.EditKategorieclose, .AddKategoriuclose, .SetVyhodnoteniaclose {
+    ,.EditKategorieclose, .AddKategoriuclose, .SetVyhodnoteniaclose, .delKategoriModalclose, .modifyChildclose, .dochadzkaModalclose, .editModalclose, .editallModalclose {
         color: #000;
         float: right;
         font-size: 28px;
@@ -229,7 +239,8 @@ input[type="radio"]:checked + .slider::before {
     background-color: rgba(0,0,0,0.4);
 }
 
-#vyberVyucujuceho_Ucebnu .modal-content, #vyberPredmetov .modal-content, #vyberTriedny_Ziaci .modal-content, #vyberZiaci .modal-content {
+#vyberVyucujuceho_Ucebnu .modal-content, #vyberPredmetov .modal-content,
+#vyberTriedny_Ziaci .modal-content, #vyberZiaci .modal-content, #modifyChildModal .modal-content {
     width: 700px;
     height: 700px;
     overflow-y: auto;
@@ -240,15 +251,18 @@ input[type="radio"]:checked + .slider::before {
     left: 50%;
 }
 
-#vyberVyucujuceho_Ucebnu .table-modal-container, #vyberPredmetov .table-modal-container, #vyberTriedny_Ziaci .table-modal-container, #vyberZiaci .table-modal-container{
+#vyberVyucujuceho_Ucebnu .table-modal-container, #vyberPredmetov .table-modal-container,
+#vyberTriedny_Ziaci .table-modal-container, #vyberZiaci .table-modal-container, #modifyChildModal .table-modal-container{
     max-height: calc(85%);
     overflow-y: auto;
 }
 
-#vyberVyucujuceho_Ucebnu .buttons-container, #vyberPredmetov .buttons-container, #vyberTriedny_Ziaci .buttons-container, #vyberZiaci .buttons-container {
+#vyberVyucujuceho_Ucebnu .buttons-container, #vyberPredmetov .buttons-container,
+#vyberTriedny_Ziaci .buttons-container, #vyberZiaci .buttons-container, #modifyChildModal .buttons-container {
     margin-top: auto;
 }
-#vyberVyucujuceho_Ucebnu .id-column, #vyberPredmetov .id-column, #vyberTriedny_Ziaci .id-column, #vyberZiaci .id-column{
+#vyberVyucujuceho_Ucebnu .id-column, #vyberPredmetov .id-column,
+#vyberTriedny_Ziaci .id-column, #vyberZiaci .id-column , #modifyChildModal .id-column{
     width: 10%;
 }
 .selection-container {

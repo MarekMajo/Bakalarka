@@ -12,6 +12,16 @@ function changeRok() {
         }
     });
 }
+
+function selectswitchByChild() {
+    let viewMode = document.getElementById('switchByChild').value;
+    sendRequest('/getChildMenu', 'POST', (viewMode), (data) => {
+        if (data['result']) {
+            window.location.reload()
+        }
+    });
+}
+
 function sendRequest(url, method, body, onSuccess, onError) {
     let fetchOptions = {
         method: method,

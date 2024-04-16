@@ -1,34 +1,31 @@
-{% extends "menu.html" %}
+{% extends "mainHtml.html" %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/Rocniky.css') }}">
 
-<style>
-    #addSkolskyRok .modal-content label,
-#addSkolskyRok .modal-content input {
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#addSkolskyRok .modal-content input[type="text"],
-#addSkolskyRok .modal-content input[type="date"] {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 5px;
-}
-
-</style>
 {% endblock %}
 {% block title %}Školské Roky{% endblock %}
 {% block content %}
 
 <div class="buttons-container" style="justify-content: center">
-    <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
-    <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
-    <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
-    <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
-    <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+    {% for opravnenie in opravnenia %}
+        {% if opravnenie == 5 %}
+        <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
+        {% endif %}
+        {% if opravnenie == 17 %}
+        <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
+        {% endif %}
+        {% if opravnenie == 16 %}
+        <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
+        {% endif %}
+        {% if opravnenie == 15 %}
+        <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
+        {% endif %}
+        {% if opravnenie == 19 %}
+        <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+        {% endif %}
+    {% endfor %}
 </div>
 
 <div class="zoznam">
@@ -61,8 +58,8 @@
                 <td>{{ rok[2] }}</td>
                 <td>{{ rok[3] }}</td>
                 <td>
-                    <button class="editButton">Upraviť PolRok</button>
-                    <button class="delButton">Delete</button>
+                    <button class="editPolrokButton">Upraviť PolRok</button>
+                    <button class="delPolrokButton">Delete</button>
                 </td>
             </tr>
             {% endfor %}
@@ -78,47 +75,20 @@
         <label for="koniec">Koniec Roku: </label> <input id="koniec" type="date">
         <label for="#1">Koniec #1 Polroku: </label> <input id="#1" type="date">
         <label for="#2">Začiatok #2 Polroku: </label> <input id="#2" type="date">
+        <div style="display: inline-flex ; flex-wrap: wrap;">
+        <label for="Uz#1">Uzatvoriť #1 Polrok: </label> <input id="Uz#1" type="checkbox">
+        <label for="Uz#2">Uzatvoriť #2 Polrok: </label> <input id="Uz#2" type="checkbox">
+        </div>
         <button class="button" id="saveaddSkolskyRok">Uložiť</button>
     </div>
 </div>
-
-<script>
-    document.getElementById('addUserButton').onclick = function () {
-        let modal = document.getElementById('addSkolskyRok');
-        modal.style.display = 'block';
-        document.getElementById('zaciatok').value = '';
-        document.getElementById('koniec').value = '';
-        document.getElementById('#1').value = '';
-        document.getElementById('#2').value = '';
-        document.getElementsByClassName('addSkolskyRokModalclose')[0].onclick = function () {
-            modal.style.display = 'none';
-        };
-        document.getElementById('zaciatok').addEventListener('change', function() {
-            let zaciatokRoku = new Date(this.value);
-            let koniecRoku = new Date(zaciatokRoku.getFullYear() + 1, 5, 31);
-            let koniecPrvehoPolroku = new Date(zaciatokRoku.getFullYear() + 1, 0, 32);
-            let zaciatokDruhehoPolroku = new Date(zaciatokRoku.getFullYear() + 1, 1, 2);
-
-            document.getElementById('koniec').value = koniecRoku.toISOString().split('T')[0];
-            document.getElementById('#1').value = koniecPrvehoPolroku.toISOString().split('T')[0];
-            document.getElementById('#2').value = zaciatokDruhehoPolroku.toISOString().split('T')[0];
-        });
-        document.getElementById('saveaddSkolskyRok').onclick = function () {
-            let zoznam = {
-                zaciatok: document.getElementById('zaciatok').value,
-                koniec: document.getElementById('koniec').value,
-                polrok1: document.getElementById('#1').value,
-                polrok2: document.getElementById('#2').value
-            };
-            sendRequest('/skolskeRoky/ulozitNovyRok', 'POST', (zoznam), (data) => {
-                if (data['result']) {
-                    window.location.href = '/skolskeRoky';
-                }else {
-                    alert("Zadané dátumy sa zhodujú s existujúcim rokom");
-                }
-            });
-        };
-    };
-</script>
+<div id="delsModal" class="modal">
+    <div class="modal-content">
+        <a id="sprava"></a>
+        <a class="delsModalclose">X</a>
+        <button id="delsButton">Vymazať</button>
+    </div>
+</div>
 <script src="{{ url_for('static', filename='javascript/zoznam.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/skolskyRoky.js') }}"></script>
 {% endblock %}

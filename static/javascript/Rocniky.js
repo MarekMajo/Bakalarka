@@ -1,6 +1,25 @@
 let EditListener = null;
 let AddListener = null;
 
+function searchFunction() {
+    let filter, tr, tdName, tdId, i, txtValueName, txtValueId;
+    filter = document.querySelector(".search-input").value.toUpperCase();
+    tr = document.querySelector(".table").getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) {
+        tdId = tr[i].getElementsByTagName("td")[1];
+        tdName = tr[i].getElementsByTagName("td")[2];
+        if (tdId || tdName) {
+            txtValueId = tdId.textContent || tdId.innerText;
+            txtValueName = tdName.textContent || tdName.innerText;
+            if (txtValueId.toUpperCase().indexOf(filter) > -1 || txtValueName.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
 function add(idCell, vyberZiakov) {
     return function () {
         let modal = document.getElementById('vyberZiaci');
@@ -90,33 +109,40 @@ function edit(idCell, vyberZiakov) {
         });
     }
 }
+if (document.getElementById('addUserButton')) {
+    document.getElementById('addUserButton').onclick = function () {
+        let modal = document.getElementById('addRocnik');
+        modal.style.display = 'block';
+        document.getElementById('Nazov').value = '';
+        document.getElementById('Ziaci').value = 'None';
+        document.getElementsByClassName('addRocnikModalclose')[0].onclick = function () {
+            modal.style.display = 'none';
+            document.getElementById('Ziaci').removeEventListener('click', AddListener);
+        };
+        let vyberZiakov = [];
+        AddListener = add(null, vyberZiakov);
+        document.getElementById('Ziaci').addEventListener('click', AddListener);
 
-document.getElementById('addUserButton').onclick = function () {
-    let modal = document.getElementById('addRocnik');
-    modal.style.display = 'block';
-    document.getElementById('Nazov').value = '';
-    document.getElementById('Ziaci').value = 'None';
-    document.getElementsByClassName('addRocnikModalclose')[0].onclick = function () {
-        modal.style.display = 'none';
-        document.getElementById('Ziaci').removeEventListener('click', AddListener);
+        document.getElementById('saveaddRocnik').onclick = function () {
+            if (document.getElementById('Nazov').value !== "") {
+                sendRequest('/Rocniky/saveRocnik', 'POST', ({
+                    nazov: document.getElementById('Nazov').value,
+                    ziaci: vyberZiakov
+                }), (data) => {
+                    if (data) {
+                        window.location.reload();
+                    } else if (!data) {
+                        alert("Zadaný názov už existuje");
+                    } else {
+                        alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                        window.location.reload();
+                    }
+                });
+            } else
+                alert("Nezadali ste Názov");
+        };
     };
-    let vyberZiakov = [];
-    AddListener = add(null, vyberZiakov);
-    document.getElementById('Ziaci').addEventListener('click', AddListener);
-
-    document.getElementById('saveaddRocnik').onclick = function () {
-        if (document.getElementById('Nazov').value !== "") {
-            sendRequest('/Rocniky/saveRocnik', 'POST', ({nazov: document.getElementById('Nazov').value, ziaci:vyberZiakov}), (data)=> {
-            if (data) {
-                window.location.reload();
-            } else {
-                alert("Zadaný názov už existuje");
-            }
-        });
-        } else
-            alert("Nezadali ste Názov");
-    };
-};
+}
 
 const editRocnik = document.getElementsByClassName("editRocnik")
 for (let i = 0; i < editRocnik.length; i++) {
@@ -150,8 +176,11 @@ for (let i = 0; i < editRocnik.length; i++) {
                 sendRequest('/Rocniky/updateRocnik', 'POST', ({id: idCell , nazov: document.getElementById('Nazov').value, ziaci:vyberZiakov}), (data)=> {
                 if (data) {
                     window.location.reload();
-                } else {
+                } else if (!data) {
                     alert("Zadaný názov už existuje");
+                } else {
+                    alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                    window.location.reload();
                 }
             });
             } else
@@ -174,6 +203,9 @@ for (let i = 0; i < dellRocnik.length; i++) {
         document.getElementById('savedelRocnik').onclick = function () {
             sendRequest("/Rocniky/delRocnik", 'POST', (idCell), (data) => {
                 if (data) {
+                    window.location.reload();
+                } else {
+                    alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
                     window.location.reload();
                 }
             });

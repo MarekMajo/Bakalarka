@@ -1,4 +1,4 @@
-{% extends "menu.html" %}
+{% extends "mainHtml.html" %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}" >
@@ -44,7 +44,6 @@
 <div id="EditKategorie" class="modal">
     <div  class="modal-content-Kategorie">
         <button class="button" id="addKategoriubtn">Pridať kategóriu</button>
-        <button class="button">Vymazať kategórie</button>
         <a class="EditKategorieclose">X</a>
         <div class="table-modal-container">
             <div class="table-modal-container">
@@ -56,6 +55,7 @@
                         <th>Typ</th>
                         <th>Váha</th>
                         <th>Max body</th>
+                        <th>Vymazať</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -127,7 +127,13 @@
     </div>
 </div>
 
-
+<div id="delKategoriModal" class="modal">
+    <div class="modal-content">
+        Nauzaj chcete odstrániť túto kategóriu aj so všetkými vloženými známkami?
+        <a class="delKategoriModalclose">X</a>
+        <button id="delKategoriSaveButton">Vymazať</button>
+    </div>
+</div>
 
 <script src="{{ url_for('static', filename='javascript/zoznam.js') }}"></script>
 <script src="{{ url_for('static', filename='javascript/EditZnamky.js') }}"></script>

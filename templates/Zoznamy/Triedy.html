@@ -1,18 +1,29 @@
-{% extends "menu.html" %}
+{% extends "mainHtml.html" %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/Triedy.css') }}">
 {% endblock %}
 {% block title %}Zoznam Tried{% endblock %}
 {% block content %}
 
 <div class="buttons-container" style="justify-content: center">
-    <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
-    <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
-    <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
-    <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
-    <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+    {% for opravnenie in opravnenia %}
+        {% if opravnenie == 5 %}
+        <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
+        {% endif %}
+        {% if opravnenie == 17 %}
+        <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
+        {% endif %}
+        {% if opravnenie == 16 %}
+        <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
+        {% endif %}
+        {% if opravnenie == 15 %}
+        <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
+        {% endif %}
+        {% if opravnenie == 19 %}
+        <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+        {% endif %}
+    {% endfor %}
 </div>
 
 <div class="zoznam">
@@ -32,7 +43,11 @@
             </label>
         </div>
         <div class="buttons-container">
-            <button id="addTriedaButton" class="button">Pridať Triedu</button>
+            {% for opravnenie in opravnenia %}
+                {% if opravnenie == 31 %}
+                    <button id="addTriedaButton" class="button">Pridať Triedu</button>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <div class="table-container">
@@ -58,8 +73,14 @@
                 <td>{{ trieda[4] }}</td>
                 <td>{{ trieda[5] }}</td>
                 <td>
-                    <button class="EditTrieda">Edit</button>
-                    <button class="delTrieda">Delete</button>
+                    {% for opravnenie in opravnenia %}
+                        {% if opravnenie == 33 %}
+                            <button class="EditTrieda">Edit</button>
+                        {% endif %}
+                        {% if opravnenie == 32 %}
+                            <button class="delTrieda">Delete</button>
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
             {% endfor %}
@@ -93,15 +114,16 @@
 <div id="vyberTriedny_Ziaci" class="modal">
     <div class="modal-content">
         <a class="vyberTriedny_Ziaciclose">X</a>
-            <input type="text" id="vybervyberTriedny_Ziacifiler" placeholder="Search for names..." class="search-input">
+            <input style="width: 20%" type="text" id="vybervyberTriedny_Ziacifiler" placeholder="Search for names..." class="search-input">
+            <select onchange="filterRocnikyPredmetu()" style="display: none" class="rights-selector" id="predmeSelect"></select>
         <div class="table-modal-container">
             <table class="modal-table">
                 <thead>
                     <tr>
                         <th class="box"></th>
-                        <th class="id-column">ID</th>
+                        <th id="id" class="id-column">ID</th>
                         <th id="meno">Meno Priezvisko</th>
-                        <th id="role">Práva</th>
+                        <th id="role">Meno Učiteľa</th>
                         <th id="rocnik">Ročník</th>
                     </tr>
                 </thead><tbody><tr></tr></tbody>

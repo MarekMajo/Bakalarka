@@ -1,15 +1,27 @@
-{% extends "menu.html" %}
+{% extends "mainHtml.html" %}
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/zoznam.css') }}">
 {% endblock %}
 {% block title %}Profile{% endblock %}
 {% block content %}
 <div class="buttons-container" style="justify-content: center">
-    <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
-    <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
-    <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
-    <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
-    <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+    {% for opravnenie in opravnenia %}
+        {% if opravnenie == 5 %}
+        <a href="/uzivatelia" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Uzivatelov</a>
+        {% endif %}
+        {% if opravnenie == 17 %}
+        <a href="/Triedy" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Tried</a>
+        {% endif %}
+        {% if opravnenie == 16 %}
+        <a href="/Ucebne" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Učební</a>
+        {% endif %}
+        {% if opravnenie == 15 %}
+        <a href="/Predmety" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Predmetov</a>
+        {% endif %}
+        {% if opravnenie == 19 %}
+        <a href="/Rocniky" class="button" style="text-decoration: none; font-family: 'Arial', sans-serif">Zoznam Ročníkov</a>
+        {% endif %}
+    {% endfor %}
 </div>
 <div class="zoznam">
     <div class="controls-container">
@@ -28,9 +40,17 @@
             </label>
         </div>
         <div class="buttons-container">
-            <button id="addUserButton" class="button">Pridať Užívateľa</button>
-            <button id="del" class="button">Odstrániť Užívateľov</button>
-            <button id="role" class="button">Zmeniť rolu</button>
+            {% for opravnenie in opravnenia %}
+                {% if opravnenie == 11 %}
+                    <button id="addUserButton" class="button">Pridať Užívateľa</button>
+                {% endif %}
+                {% if opravnenie == 12 %}
+                    <button id="del" class="button">Odstrániť Užívateľov</button>
+                {% endif %}
+                {% if opravnenie == 14 %}
+                    <button id="role" class="button">Zmeniť rolu</button>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <div class="table-container">
@@ -60,9 +80,17 @@
                 <td>{{ uzivatel[5] }}</td>
                 <td>{{ uzivatel[6] }}</td>
                 <td>
-                    <button class="editButton">Edit</button>
-                    <button class="delButton">Delete</button>
-                    <button class="pravaButton">Práva</button>
+                    {% for opravnenie in opravnenia %}
+                        {% if opravnenie == 13 %}
+                            <button class="editButton">Edit</button>
+                        {% endif %}
+                        {% if opravnenie == 12 %}
+                            <button class="delButton">Delete</button>
+                        {% endif %}
+                        {% if opravnenie == 14 %}
+                            <button class="pravaButton">Práva</button>
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
             {% endfor %}
@@ -74,7 +102,7 @@
     <div class="modal-content">
         Nauzaj chcete odstrániť tíchto uživateľov?
         <a class="delsModalclose">X</a>
-        <button id="delsButton">Vymazať</button>
+        <button class="button" id="delsButton">Vymazať</button>
     </div>
 </div>
 
@@ -82,15 +110,15 @@
         <div class="modal-content">
             Nauzaj chcete odstrániť tíchto uživateľov?
             <a class="delModalclose">X</a>
-            <button id="delButton">Vymazať</button>
+            <button class="button" id="delButton">Vymazať</button>
         </div>
     </div>
 
 <div id="editModal" class="modal">
         <div class="modal-content">
             <a class="editModalclose">X</a>
-            <input type="text" id="editfilterInput"  onkeyup="editfilterList()" placeholder="Search for names...">
-            <button id="editsubmitButton">Ulož</button>
+            <input class="search-input" type="text" id="editfilterInput"  onkeyup="editfilterList()" placeholder="Search for names...">
+            <button class="button" id="editsubmitButton">Ulož</button>
             <ul id="editselectList"></ul>
         </div>
     </div>
@@ -98,8 +126,8 @@
 <div id="editallModal" class="modal">
         <div class="modal-content">
             <a class="editallModalclose">X</a>
-            <input type="text" id="editallfilterInput"  onkeyup="editfilterList()" placeholder="Search for names...">
-            <button id="editallsubmitButton">Ulož</button>
+            <input type="text" id="editallfilterInput" class="search-input"  onkeyup="editallfilterList()" placeholder="Search for names...">
+            <button class="button" id="editallsubmitButton">Ulož</button>
             <ul id="editallselectList"></ul>
         </div>
     </div>
@@ -125,6 +153,7 @@
                     <select id="Pohlavie" name="pohlavie">
                         <option value="Muž">Muž</option>
                         <option value="Žena">Žena</option>
+                        <option value="null">Naserte si ostatný</option>
                         <option value="Neurčené" selected>Neurčené</option>
                     </select>
                 </div>

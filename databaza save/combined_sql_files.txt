@@ -11,32 +11,110 @@ create table asistent_predmety
         foreign key (predmet_id) references predmety (predmet_id)
 );
 
-create table dochadzka
+
+create table dochadzky
 (
-    dochadzka_id    int auto_increment
+    id_dochadza   int auto_increment
         primary key,
-    datum           date        not null,
-    typ_chybania    varchar(45) not null,
-    ziak_id         int         not null,
-    predmet_id      int         not null,
-    skolsky_rok_id  int         not null,
-    ospravedlnienka tinyint     null,
-    constraint dochadzka_ibfk_1
+    ziak_id       int  not null,
+    id_rozvrh     int  not null,
+    datum         date not null,
+    typ           int  not null,
+    poznamka      int  null,
+    ospravedlnene int  null,
+    constraint dochadzky_osoba_osoba_id_fk
         foreign key (ziak_id) references osoba (osoba_id),
-    constraint dochadzka_ibfk_2
-        foreign key (predmet_id) references predmety (predmet_id),
-    constraint dochadzka_ibfk_3
-        foreign key (skolsky_rok_id) references skolske_roky (skolsky_rok_id)
+    constraint dochadzky_rozvrhy_rozvrh_id_fk
+        foreign key (id_rozvrh) references rozvrhy (rozvrh_id)
 );
 
-create index predmet_id
-    on dochadzka (predmet_id);
+create definer = root@`%` trigger after_dochadzka_insert
+    after insert
+    on dochadzky
+    for each row
+begin
+    declare skratkaPredmetu VARCHAR(10);
+    declare info VARCHAR(255);
+    declare dlzkaMeskania VARCHAR(255);
+    select z.skratka into skratkaPredmetu
+    from rozvrhy r
+    join predmety p on r.predmet_id = p.predmet_id
+    join zoznam_predmetov z on p.zoznam_predmet_id = z.zoznam_predmet_id
+    where r.rozvrh_id = NEW.id_rozvrh;
+    if NEW.typ = 1 then
+        set info = CONCAT('Chýbanie na predmete ', skratkaPredmetu);
+        if new.ospravedlnene = 1 then
+           set info = CONCAT('Chýbanie na predmete ', skratkaPredmetu, '- Ospravedlnené');
+        elseif NEW.ospravedlnene = 2 then
+            set info = CONCAT('Chýbanie na predmete ', skratkaPredmetu, '- Neospravedlnené');
+        end if;
+    elseif NEW.typ = 2 then
+        set dlzkaMeskania = IFNULL(NEW.poznamka, 'neuvedená');
+        set info = CONCAT('Meškanie na predmete ', skratkaPredmetu, ', dĺžka meškania: ', dlzkaMeskania);
+        if new.ospravedlnene = 1 then
+           set info = CONCAT('Meškanie na predmete ', skratkaPredmetu, ', dĺžka meškania: ', dlzkaMeskania, '- Ospravedlnené');
+        elseif NEW.ospravedlnene = 2 then
+            set info = CONCAT('Meškanie na predmete ', skratkaPredmetu, ', dĺžka meškania: ', dlzkaMeskania, '- Neospravedlnené');
+        end if;
+    end if;
+    insert into oznamenia(osoba_id, datum, sprava)
+    values (NEW.ziak_id, NOW(), info);
+END;
 
-create index skolsky_rok_id
-    on dochadzka (skolsky_rok_id);
+create definer = root@`%` trigger after_dochadzka_update
+    after update
+    on dochadzky
+    for each row
+BEGIN
+    DECLARE skratkaPredmetu VARCHAR(10);
+    DECLARE info VARCHAR(255);
+    DECLARE ospravedlnenieSprava VARCHAR(255);
+    select z.skratka into skratkaPredmetu
+    from rozvrhy r
+    join predmety p on r.predmet_id = p.predmet_id
+    join zoznam_predmetov z on p.zoznam_predmet_id = z.zoznam_predmet_id
+    where r.rozvrh_id = NEW.id_rozvrh;
 
-create index ziak_id
-    on dochadzka (ziak_id);
+    IF NEW.typ != OLD.typ THEN
+        IF NEW.typ = 2 THEN
+            SET info = CONCAT('Zmena z Chýbania na Meškanie na predmete ', skratkaPredmetu, ', čas meškania: ', new.poznamka);
+        ELSEIF NEW.typ = 1 THEN
+            SET info = CONCAT('Zmena z Meškania na Chýbanie na predmete ', skratkaPredmetu);
+        END IF;
+    else
+        IF NEW.typ = 2 THEN
+            SET info = CONCAT('Meškanie na predmete ', skratkaPredmetu, ', čas meškania: ', new.poznamka);
+        ELSEIF NEW.typ = 1 THEN
+            SET info = CONCAT('Chýbanie na predmete ', skratkaPredmetu);
+        END IF;
+    end if;
+    IF NEW.ospravedlnene = 1 THEN
+        SET ospravedlnenieSprava = ' - Ospravedlnené';
+    ELSEIF NEW.ospravedlnene = 2 THEN
+        SET ospravedlnenieSprava = ' - Neospravedlnené';
+    ELSE
+        SET ospravedlnenieSprava = '';
+    END IF;
+    INSERT INTO oznamenia(osoba_id, datum, sprava)
+    VALUES (NEW.ziak_id, NOW(), concat(info, ospravedlnenieSprava));
+END;
+
+create definer = root@`%` trigger before_dochadzka_delete
+    before delete
+    on dochadzky
+    for each row
+BEGIN
+    DECLARE skratkaPredmetu VARCHAR(10);
+    DECLARE sprava VARCHAR(255);
+    SELECT z.skratka INTO skratkaPredmetu
+    FROM rozvrhy r
+    JOIN predmety p ON r.predmet_id = p.predmet_id
+    JOIN zoznam_predmetov z ON p.zoznam_predmet_id = z.zoznam_predmet_id
+    WHERE r.rozvrh_id = OLD.id_rozvrh;
+    SET sprava = CONCAT('Prítomný na predmete ', skratkaPredmetu);
+    INSERT INTO oznamenia(osoba_id, datum, sprava)
+    VALUES (OLD.ziak_id, NOW(), sprava);
+END;
 
 
 
@@ -55,6 +133,9 @@ INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Vymazanie Profilovky', 
 INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Zoznam pouzivatelov', 'Zoznam pouzivatelov');
 INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Edit Prihlasovacie Udaje', 'Profil');
 INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Zobraz pokus', 'Pozicie');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Upraviť Deti Rodiča', 'Profil');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Upravovať známky', 'Znamky');
+INSERT INTO pokus.opravnenia (nazov, kategoria) VALUES ('Zobraziť známky', 'Znamky');
 
 
 create table opravnenia_pozicie
@@ -73,18 +154,6 @@ create index Opravnenia_id
 create index pozicia_id
     on opravnenia_pozicie (pozicia_id);
 
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 1);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 2);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 3);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 4);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 5);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 6);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 7);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 2);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 3);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 4);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 5);
-INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 6);
 INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (3, 2);
 INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (3, 4);
 INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (3, 6);
@@ -98,6 +167,21 @@ INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 4);
 INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 5);
 INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 6);
 INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (5, 7);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 1);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 3);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 5);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 7);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 8);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (1, 9);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 2);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 3);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 4);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 5);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 6);
+INSERT INTO pokus.opravnenia_pozicie (pozicia_id, Opravnenia_id) VALUES (2, 9);
 
 
 create table osoba
@@ -121,7 +205,7 @@ create index pozicia_id
 
 INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Marek', 'Tvrdošinský', '1234567890', null, null, null, 'marekmajo25@gmail.com', 1);
 INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('William', 'Gross', '731512225', 'Muž', 'Podzáhradná 386, 017 46 Matovce', '+421 2 38321308', 'tylernorton@gmail.com', null);
-INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Erin', 'Holder', '639405914', 'Muž', 'Mlynarovičova 6, 013 31 Kiarov', '+421 913 616 925', 'palmershawn@pobox.sk', null);
+INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Erin', 'Holder', '639405914', 'Muž', 'Mlynarovičova 6, 013 31 Kiarov', '+421 913 616 925', 'palmershawn@pobox.sk', 2);
 INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Chloe', 'Mills', '940611501', 'Žena', 'Rybničná 17, 930 55 Voderady', '+421 913 970 252', 'blakeamy@chello.sk', null);
 INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lori', 'Randall', '986637142', 'Neurčené', 'Bartoňova 6, 066 32 Pavlice', '+421 2 51436779', 'johnkelley@azet.sk', null);
 INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Lisa', 'Adams', '357432798', 'Žena', 'Hríbová 2, 842 73 Torysky', '+421 949 255 608', 'gomezgary@atlas.sk', null);
@@ -223,6 +307,17 @@ INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefo
 INSERT INTO pokus.osoba (meno, priezvisko, rod_cislo, Pohlavie, bydlisko, telefon, email, pozicia_id) VALUES ('Šimon', 'Suchanovský', '9876543210', 'Muž', null, null, 'Simon.suchanovsky@gmail.com', 5);
 
 
+create table oznamenia
+(
+    oznamenie_id int auto_increment
+        primary key,
+    osoba_id     int          not null,
+    datum        datetime     not null,
+    sprava       varchar(255) null,
+    constraint oznamenia_osoba_osoba_id_fk
+        foreign key (osoba_id) references osoba (osoba_id)
+);
+
 create table pozicie
 (
     pozicia_id int auto_increment
@@ -256,6 +351,8 @@ create index rocnik_id
 create index zoznam_predmet_id
     on predmety (zoznam_predmet_id);
 
+
+
 create table predmety_ucebne
 (
     predmet_id        int         not null,
@@ -273,6 +370,25 @@ create index predmet_id
 create index ucebna_id
     on predmety_ucebne (ucebna_id);
 
+
+create table predmet_kategorie_znamok
+(
+    kategoria_id   int auto_increment
+        primary key,
+    predmet_id     int           not null,
+    trieda_id      int           not null,
+    nazov          varchar(255)  not null,
+    typ_znamky     varchar(45)   not null,
+    vaha           decimal(5, 2) not null,
+    max_body       int           null,
+    skolsky_rok_id int           null,
+    constraint predmet_kategorie_znamok_predmety_predmet_id_fk
+        foreign key (predmet_id) references predmety (predmet_id),
+    constraint predmet_kategorie_znamok_skolske_roky_skolsky_rok_id_fk
+        foreign key (skolsky_rok_id) references skolske_roky (skolsky_rok_id),
+    constraint predmet_kategorie_znamok_triedy_trieda_id_fk
+        foreign key (trieda_id) references triedy (trieda_id)
+);
 
 create table prihlasovacie_udaje
 (
@@ -405,7 +521,6 @@ INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('6', '2023/2024');
 INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('7', '2023/2024');
 INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('8', '2023/2024');
 INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('9', '2023/2024');
-INSERT INTO pokus.rocniky (nazov, skolsky_rok_nazov) VALUES ('1', '2022/2023');
 
 
 create table rocnik_osoba
@@ -418,6 +533,16 @@ create table rocnik_osoba
         foreign key (rocnik_id) references rocniky (rocnik_id)
 );
 
+create table rodic_deti
+(
+    Rodic_id          int         not null,
+    Ziak_id           int         not null,
+    skolsky_rok_nazov varchar(45) not null,
+    constraint Rodic_deti_osoba_osoba_id_fk
+        foreign key (Rodic_id) references osoba (osoba_id),
+    constraint Rodic_deti_osoba_osoba_id_fk_2
+        foreign key (Ziak_id) references osoba (osoba_id)
+);
 
 
 create table rozvrhy
@@ -460,13 +585,25 @@ create table skolske_roky
     nazov          varchar(45) not null,
     polrok         tinyint     not null,
     zaciatok_roku  date        not null,
-    koniec_roku    date        not null
+    koniec_roku    date        not null,
+    uzatvoreny     int         null
 );
 
-INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2022/2023', 0, '2022-09-05', '2023-01-31');
-INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2022/2023', 1, '2023-02-01', '2023-06-30');
-INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2023/2024', 0, '2023-09-04', '2024-01-31');
-INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku) VALUES ('2023/2024', 1, '2024-02-01', '2024-06-30');
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku, uzatvoreny) VALUES ('2022/2023', 0, '2022-09-05', '2023-01-31', null);
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku, uzatvoreny) VALUES ('2022/2023', 1, '2023-02-01', '2023-06-30', null);
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku, uzatvoreny) VALUES ('2023/2024', 0, '2023-09-04', '2024-01-31', null);
+INSERT INTO pokus.skolske_roky (nazov, polrok, zaciatok_roku, koniec_roku, uzatvoreny) VALUES ('2023/2024', 1, '2024-02-01', '2024-06-30', null);
+
+
+create table trieda_predmety
+(
+    trieda_id  int null,
+    predmet_id int null,
+    constraint trieda_predmety_predmety_predmet_id_fk
+        foreign key (predmet_id) references predmety (predmet_id),
+    constraint trieda_predmety_triedy_trieda_id_fk
+        foreign key (trieda_id) references triedy (trieda_id)
+);
 
 
 create table trieda_rocniky
@@ -478,28 +615,6 @@ create table trieda_rocniky
     constraint trieda_rocniky_triedy_trieda_id_fk
         foreign key (trieda_id) references triedy (trieda_id)
 );
-
-
-
-create table triedne_knihy
-(
-    trieda_kniha_id int auto_increment
-        primary key,
-    datum           date not null,
-    trieda_id       int  not null,
-    predmet_id      int  not null,
-    constraint triedne_knihy_ibfk_1
-        foreign key (trieda_id) references triedy (trieda_id),
-    constraint triedne_knihy_ibfk_2
-        foreign key (predmet_id) references predmety (predmet_id)
-);
-
-create index predmet_id
-    on triedne_knihy (predmet_id);
-
-create index trieda_id
-    on triedne_knihy (trieda_id);
-
 
 
 create table triedy
@@ -518,7 +633,6 @@ create index triedny_id
 
 create index triedy_skolske_roky_skolsky_rok_id_fk
     on triedy (skolsky_rok_id);
-
 
 
 create table ucebne
@@ -545,38 +659,6 @@ INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Prírodovedná učebňa', 'PR
 INSERT INTO pokus.ucebne (nazov, skratka) VALUES ('Jazyková učebňa', 'JAZ');
 
 
-create table ucebne_plany
-(
-    uc_plan_id int auto_increment
-        primary key,
-    nazov      varchar(45) not null,
-    predmet_id int         not null,
-    constraint ucebne_plany_ibfk_1
-        foreign key (predmet_id) references predmety (predmet_id)
-);
-
-create index predmet_id
-    on ucebne_plany (predmet_id);
-
-
-
-create table ucebne_podplany
-(
-    uc_podplan_id  int auto_increment
-        primary key,
-    uc_plan_id     int         not null,
-    nazov          varchar(45) not null,
-    pocet_hodin    int         not null,
-    oducene_hodiny int         null,
-    constraint ucebne_podplany_ibfk_1
-        foreign key (uc_plan_id) references ucebne_plany (uc_plan_id)
-);
-
-create index uc_plan_id
-    on ucebne_podplany (uc_plan_id);
-
-
-
 create table ucebne_triedy
 (
     ucebna_id int null,
@@ -586,7 +668,6 @@ create table ucebne_triedy
     constraint ucebne_triedy_ucebne_ucebna_id_fk
         foreign key (ucebna_id) references ucebne (ucebna_id)
 );
-
 
 
 create table ucitel_predmety
@@ -607,7 +688,6 @@ create index ucitel_id
     on ucitel_predmety (ucitel_id);
 
 
-
 create table ziak_predmety
 (
     ziak_id    int null,
@@ -618,12 +698,15 @@ create table ziak_predmety
         foreign key (predmet_id) references predmety (predmet_id)
 );
 
+create index idx_ziak_predmet
+    on ziak_predmety (ziak_id, predmet_id);
 
 
 create table ziak_trieda
 (
-    ziak_id   int not null,
-    trieda_id int not null,
+    ziak_id           int         not null,
+    trieda_id         int         not null,
+    skolsky_rok_nazov varchar(45) null,
     constraint ziak_trieda_osoba_osoba_id_fk
         foreign key (ziak_id) references osoba (osoba_id),
     constraint ziak_trieda_triedy_trieda_id_fk
@@ -631,40 +714,102 @@ create table ziak_trieda
 );
 
 
-
-create table znamky
+create table znamka_z_percenta
 (
-    znamka_id      int auto_increment
-        primary key,
-    znamka         varchar(45) not null,
-    max_hodnota    varchar(45) null,
-    vaha           float       null,
-    ziak_id        int         not null,
-    predmet_id     int         not null,
-    ucitel_id      int         not null,
-    skolsky_rok_id int         not null,
-    podpis         tinyint     not null,
-    constraint znamky_ibfk_1
-        foreign key (ziak_id) references osoba (osoba_id),
-    constraint znamky_ibfk_2
-        foreign key (predmet_id) references predmety (predmet_id),
-    constraint znamky_ibfk_3
-        foreign key (ucitel_id) references osoba (osoba_id),
-    constraint znamky_ibfk_4
-        foreign key (skolsky_rok_id) references skolske_roky (skolsky_rok_id)
+    kategoria_id int           not null,
+    znamka       int           not null,
+    od           decimal(5, 2) not null,
+    do           decimal(5, 2) null
 );
 
-create index predmet_id
-    on znamky (predmet_id);
 
-create index skolsky_rok_id
-    on znamky (skolsky_rok_id);
+create table znamky_ziakov
+(
+    znamka_id    int auto_increment
+        primary key,
+    kategoria_id int         not null,
+    ziak_id      int         not null,
+    znamka       varchar(45) null,
+    predmet_id   int         null,
+    podpis       int         null,
+    constraint znamky_ziakov_fk
+        foreign key (ziak_id, predmet_id) references ziak_predmety (ziak_id, predmet_id),
+    constraint znamky_ziakov_predmet_kategorie_znamok_kategoria_id_fk
+        foreign key (kategoria_id) references predmet_kategorie_znamok (kategoria_id)
+);
 
-create index ucitel_id
-    on znamky (ucitel_id);
+create index znamky_ziakov_predmety_predmet_id_fk
+    on znamky_ziakov (predmet_id);
 
-create index ziak_id
-    on znamky (ziak_id);
+create definer = root@`%` trigger after_znamky_ziakov_insert
+    after insert
+    on znamky_ziakov
+    for each row
+BEGIN
+    declare predmet VARCHAR(255);
+    declare sprava VARCHAR(255);
+    declare znamka_z_vypoctu int;
+    select zp.znamka into znamka_z_vypoctu from znamka_z_percenta zp
+            where zp.kategoria_id = new.kategoria_id and zp.od <= new.znamka and zp.do >= new.znamka;
+    select z.nazov into predmet from predmety p join zoznam_predmetov z on z.zoznam_predmet_id = p.zoznam_predmet_id
+             where p.predmet_id = new.predmet_id;
+
+    if znamka_z_vypoctu is NULL then
+        set sprava = concat('Pridaná známka v ', predmet, ' > ', new.znamka);
+    else
+        set sprava = concat('Pridaná známka v ', predmet, ' > ', new.znamka, '(', znamka_z_vypoctu ,')');
+    end if;
+
+    INSERT INTO oznamenia(osoba_id, datum, sprava)
+    VALUES (NEW.ziak_id, NOW(), sprava);
+END;
+
+create definer = root@`%` trigger after_znamky_ziakov_update
+    after update
+    on znamky_ziakov
+    for each row
+BEGIN
+    declare predmet VARCHAR(255);
+    declare sprava VARCHAR(255);
+    declare znamka_z_vypoctu_old int;
+    declare znamka_z_vypoctu_new int;
+    select zp.znamka into znamka_z_vypoctu_old from znamka_z_percenta zp
+            where zp.kategoria_id = old.kategoria_id and zp.od <= old.znamka and zp.do >= old.znamka;
+    select zp.znamka into znamka_z_vypoctu_new from znamka_z_percenta zp
+            where zp.kategoria_id = new.kategoria_id and zp.od <= new.znamka and zp.do >= new.znamka;
+    select z.nazov into predmet from predmety p join zoznam_predmetov z on z.zoznam_predmet_id = p.zoznam_predmet_id
+             where p.predmet_id = old.predmet_id;
+
+    if znamka_z_vypoctu_old is NULL then
+        set sprava = concat('Zmenená známka v ', predmet, ' z ', old.znamka, ' na ', new.znamka);
+    else
+        set sprava = concat('Zmenená známka v ', predmet, ' z ', old.znamka, '(', znamka_z_vypoctu_old ,')', ' na ', new.znamka, '(', znamka_z_vypoctu_new ,')');
+    end if;
+    INSERT INTO oznamenia(osoba_id, datum, sprava)
+    VALUES (old.ziak_id, NOW(), sprava);
+END;
+
+create definer = root@`%` trigger before_znamky_ziakov_delete
+    before delete
+    on znamky_ziakov
+    for each row
+BEGIN
+    declare predmet VARCHAR(255);
+    declare sprava VARCHAR(255);
+    declare znamka_z_vypoctu int;
+    select zp.znamka into znamka_z_vypoctu from znamka_z_percenta zp
+            where zp.kategoria_id = old.kategoria_id and zp.od <= old.znamka and zp.do >= old.znamka;
+    select z.nazov into predmet from predmety p join zoznam_predmetov z on z.zoznam_predmet_id = p.zoznam_predmet_id
+             where p.predmet_id = old.predmet_id;
+
+    if znamka_z_vypoctu is NULL then
+        set sprava = concat('Odstránená známka v ', predmet, ' > ', old.znamka);
+    else
+        set sprava = concat('Odstránená známka v ', predmet, ' > ', old.znamka, '(', znamka_z_vypoctu ,')');
+    end if;
+    INSERT INTO oznamenia(osoba_id, datum, sprava)
+    VALUES (old.ziak_id, NOW(), sprava);
+END;
 
 
 

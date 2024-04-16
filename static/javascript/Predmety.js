@@ -55,6 +55,8 @@ function copyCheckBox(typ) {
             document.getElementById('ZadanyVyucujuci'),
             document.querySelector('label[for="ZadanaUcebna"]'),
             document.getElementById('ZadanaUcebna'),
+            document.querySelector('label[for="ZadanyAsistent"]'),
+            document.getElementById('ZadanyAsistent'),
             document.getElementById('rocnik')
         ];
     if (typ === 'add') {
@@ -103,13 +105,14 @@ function addVyucujuci(VyucujuciSelectedIds){
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
         document.getElementsByClassName('vyberVyucujuceho_Ucebnuclose')[0].onclick = function() {
             modal.style.display = 'none';
             tbody.removeEventListener('click', (tBodyListener));
         };
+        tbody.innerHTML = '';
         sendRequest('/Predmety/getUcitelia', 'GET', null, (data) => {
-            tbody.innerHTML = '';
             data.forEach((osoba) => {
                 let [id, meno, role] = osoba;
                 let rowHTML = `<tr>
@@ -148,12 +151,13 @@ function addAsistent(AsistenSelectedIds) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
         document.getElementsByClassName('vyberVyucujuceho_Ucebnuclose')[0].onclick = function() {
             modal.style.display = 'none';
         };
+        tbody.innerHTML = '';
         sendRequest('/Predmety/getUcitelia', 'GET', null, (data) => {
-            tbody.innerHTML = '';
             data.forEach((osoba) => {
                 let [id, meno, role] = osoba;
                 let rowHTML = `<tr>
@@ -189,6 +193,7 @@ function addUcebna(UcebnaSelectedIds) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         document.getElementById("vyucujuciSelector").style.display = "none";
         document.getElementById("prava").textContent = "Skratka";
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
@@ -199,8 +204,8 @@ function addUcebna(UcebnaSelectedIds) {
             document.getElementById("prava").style.display = "block";
             tbody.removeEventListener('click', (tBodyListener));
         };
+        tbody.innerHTML = '';
         sendRequest('/Predmety/getUcebne', 'GET', null, (data) => {
-            tbody.innerHTML = '';
             data.forEach((ucebna) => {
                 let [id, meno, role] = ucebna;
                 let rowHTML = `<tr>
@@ -241,6 +246,7 @@ function addZiaci(ZiaciSelectedIds) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
         document.getElementById("prava").style.display = "none";
         document.getElementById("vyucujuciSelector").style.display = "none";
@@ -250,8 +256,8 @@ function addZiaci(ZiaciSelectedIds) {
             document.getElementById("prava").style.display = "block";
         };
         let rocnik =  document.querySelector(".rights-selector.add").value;
+        tbody.innerHTML = '';
         sendRequest('/Predmety/getZiaciRocnik', 'POST',(rocnik), (data) => {
-            tbody.innerHTML = '';
             data.forEach((ziak) => {
                 let [id, meno] = ziak;
                 let rowHTML = `<tr>
@@ -288,13 +294,14 @@ function editVyucujuci(VyucujuciSelectedIds, result) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         document.getElementsByClassName('vyberVyucujuceho_Ucebnuclose')[0].onclick = function() {
             modal.style.display = 'none';
             tbody.removeEventListener('click', (tBodyListener));
         };
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
+        tbody.innerHTML = '';
         sendRequest('/Predmety/getUcitelia', 'GET', null, (data) => {
-            tbody.innerHTML = '';
             data.forEach((osoba) => {
                 let [id, meno, role] = osoba;
                 let checkedAttribute = ''
@@ -340,12 +347,13 @@ function editAsistent(AsistenSelectedIds, result) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         document.getElementsByClassName('vyberVyucujuceho_Ucebnuclose')[0].onclick = function() {
             modal.style.display = 'none';
         };
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
-        sendRequest('/Predmety/getUcitelia', 'GET', null, (data) => {
-            tbody.innerHTML = '';
+        tbody.innerHTML = '';
+        sendRequest('/Predmety/getAssistenti', 'GET', null, (data) => {
             data.forEach((osoba) => {
                 let [id, meno, role] = osoba;
                 let checkedAttribute = ''
@@ -387,13 +395,14 @@ function editUcebna(UcebnaSelectedIds, ucebne) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         document.getElementsByClassName('vyberVyucujuceho_Ucebnuclose')[0].onclick = function() {
             modal.style.display = 'none';
             tbody.removeEventListener('click', (tBodyListener));
         };
         let tbody = document.querySelector('#vyberVyucujuceho_Ucebnu .modal-table tbody');
+        tbody.innerHTML = '';
         sendRequest('/Predmety/getUcebne', 'GET', null, (data) => {
-            tbody.innerHTML = '';
             data.forEach((ucebna) => {
                 let [id, meno, role] = ucebna;
                 let checkedAttribute = '';
@@ -439,6 +448,7 @@ function editZiaci(ZiaciSelectedIds, result) {
     return function () {
         let modal = document.getElementById('vyberVyucujuceho_Ucebnu');
         modal.style.display = 'block';
+        document.getElementById('vyberVyucujuceho_Ucebnufiler').value = '';
         document.getElementById("prava").style.display = "none";
         document.getElementById("vyucujuciSelector").style.display = "none";
         document.getElementsByClassName('vyberVyucujuceho_Ucebnuclose')[0].onclick = function() {
@@ -488,71 +498,84 @@ function editZiaci(ZiaciSelectedIds, result) {
         };
     };
 }
-
-document.getElementById('addPredmetButton').onclick = function() {
-    document.getElementById('ZadanaUcebna').value = "None";
-    document.getElementById('ZadanyVyucujuci').value = "None";
-    document.getElementById('zadanyZiaci').value = 'none';
-    document.querySelector(".rights-selector.add").value = 'None';
-    document.getElementById('ziaci').style.display = 'none';
-    document.getElementById('copyFromLastYearContainer').style.display = 'block';
-    copyCheckBox('add');
-    let modal = document.getElementById('addPredmet');
-    modal.style.display = 'block';
-    document.getElementsByClassName('addPredmetclose')[0].onclick = function() {
-        modal.style.display = 'none';
-        document.getElementById('ZadanyVyucujuci').removeEventListener('click', addZadanyVyucujuciListener);
-        document.getElementById('ZadanaUcebna').removeEventListener('click', addZadanaUcebnaListener);
-        document.getElementById('zadanyZiaci').removeEventListener('click', addZiaciListener);
-    document.getElementById('ZadanyAsistent').removeEventListener('click', addZadanyAsistentListener);
-    };
-    let UcebnaSelectedIds = [];
-    let VyucujuciSelectedIds = [];
-    let ZiaciSelectedIds = [];
-    let AsistenSelectedIds = [];
-    sendRequest('/Predmety/getPredmety', 'GET', null, (data) => {
-        let zoznamPredmetovSelect = document.getElementById('zoznamPredmetovSelect');
-        zoznamPredmetovSelect.innerHTML = '';
-        data.forEach((predmet) => {
-            let option = document.createElement('option');
-            option.value = predmet[0];
-            option.textContent = `${predmet[1]} (${predmet[2]})`;
-            zoznamPredmetovSelect.appendChild(option);
+if (document.getElementById('addPredmetButton')) {
+    document.getElementById('addPredmetButton').onclick = function () {
+        document.getElementById('ZadanaUcebna').value = "None";
+        document.getElementById('ZadanyVyucujuci').value = "None";
+        document.getElementById('zadanyZiaci').value = 'none';
+        document.getElementById('ZadanyAsistent').value = 'none';
+        document.querySelector(".rights-selector.add").value = 'None';
+        document.getElementById('ziaci').style.display = 'none';
+        document.getElementById('copyFromLastYearContainer').style.display = 'block';
+        copyCheckBox('add');
+        let modal = document.getElementById('addPredmet');
+        modal.style.display = 'block';
+        document.getElementsByClassName('addPredmetclose')[0].onclick = function () {
+            modal.style.display = 'none';
+            document.getElementById('ZadanyVyucujuci').removeEventListener('click', addZadanyVyucujuciListener);
+            document.getElementById('ZadanaUcebna').removeEventListener('click', addZadanaUcebnaListener);
+            document.getElementById('zadanyZiaci').removeEventListener('click', addZiaciListener);
+            document.getElementById('ZadanyAsistent').removeEventListener('click', addZadanyAsistentListener);
+        };
+        let UcebnaSelectedIds = [];
+        let VyucujuciSelectedIds = [];
+        let ZiaciSelectedIds = [];
+        let AsistenSelectedIds = [];
+        sendRequest('/Predmety/getPredmety', 'GET', null, (data) => {
+            let zoznamPredmetovSelect = document.getElementById('zoznamPredmetovSelect');
+            zoznamPredmetovSelect.innerHTML = '';
+            data.forEach((predmet) => {
+                let option = document.createElement('option');
+                option.value = predmet[0];
+                option.textContent = `${predmet[1]} (${predmet[2]})`;
+                zoznamPredmetovSelect.appendChild(option);
+            });
         });
-    });
-    addZadanyVyucujuciListener = addVyucujuci(VyucujuciSelectedIds);
-    addZadanaUcebnaListener = addUcebna(UcebnaSelectedIds);
-    addZiaciListener = addZiaci(ZiaciSelectedIds);
-    addZadanyAsistentListener = addAsistent(AsistenSelectedIds);
-    document.getElementById('ZadanyVyucujuci').addEventListener('click', addZadanyVyucujuciListener);
-    document.getElementById('ZadanyAsistent').addEventListener('click', addZadanyAsistentListener);
-    document.getElementById('ZadanaUcebna').addEventListener('click', addZadanaUcebnaListener);
-    document.getElementById('zadanyZiaci').addEventListener('click', addZiaciListener);
-    document.querySelector(".rights-selector.add").onchange = function () {
-        if (document.querySelector(".rights-selector.add").value === 'None') {
-            document.getElementById('ziaci').style.display = 'none';
-        } else {
-            document.getElementById('ziaci').style.display = 'block';
+        addZadanyVyucujuciListener = addVyucujuci(VyucujuciSelectedIds);
+        addZadanaUcebnaListener = addUcebna(UcebnaSelectedIds);
+        addZiaciListener = addZiaci(ZiaciSelectedIds);
+        addZadanyAsistentListener = addAsistent(AsistenSelectedIds);
+        document.getElementById('ZadanyVyucujuci').addEventListener('click', addZadanyVyucujuciListener);
+        document.getElementById('ZadanyAsistent').addEventListener('click', addZadanyAsistentListener);
+        document.getElementById('ZadanaUcebna').addEventListener('click', addZadanaUcebnaListener);
+        document.getElementById('zadanyZiaci').addEventListener('click', addZiaciListener);
+        document.querySelector(".rights-selector.add").onchange = function () {
+            if (document.querySelector(".rights-selector.add").value === 'None') {
+                document.getElementById('ziaci').style.display = 'none';
+            } else {
+                document.getElementById('ziaci').style.display = 'block';
+            }
         }
-    }
-    document.getElementById('addPredmetSave').onclick = function () {
-        if (document.getElementById('copyFromLastYear').checked){
-            sendRequest('/Predmety/copyFromLastYear', 'GET', null, (data)=> {
-                if (!data) {
-                    alert("Neexistujú údaje o predchádzajúcom Roku");
-                }
-            });
-        }else {
-            let predmet = document.getElementById('zoznamPredmetovSelect').value;
-            let rocnik =  document.querySelector(".rights-selector.add").value;
-            sendRequest('/Predmety/ulozitPredmetKroku', 'POST', ({predmet: predmet, vyucujuci: VyucujuciSelectedIds, asistent:AsistenSelectedIds, ucebne: UcebnaSelectedIds, rocnik:rocnik, ziaci:ZiaciSelectedIds}), (data)=> {
-                if (data){
-                    window.location.reload();
-                }
-            });
+        document.getElementById('addPredmetSave').onclick = function () {
+            if (document.getElementById('copyFromLastYear').checked) {
+                sendRequest('/Predmety/copyFromLastYear', 'GET', null, (data) => {
+                    if (!data) {
+                        alert("Neexistujú údaje o predchádzajúcom Roku");
+                    } else {
+                        window.location.reload()
+                    }
+                });
+            } else {
+                let predmet = document.getElementById('zoznamPredmetovSelect').value;
+                let rocnik = document.querySelector(".rights-selector.add").value;
+                sendRequest('/Predmety/ulozitPredmetKroku', 'POST', ({
+                    predmet: predmet,
+                    vyucujuci: VyucujuciSelectedIds,
+                    asistent: AsistenSelectedIds,
+                    ucebne: UcebnaSelectedIds,
+                    rocnik: rocnik,
+                    ziaci: ZiaciSelectedIds
+                }), (data) => {
+                    if (data) {
+                        window.location.reload();
+                    } else {
+                        alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                    }
+                });
+            }
         }
-    }
-};
+    };
+}
 
 const delPredmet = document.getElementsByClassName("delPredmet")
 for (let i = 0; i < delPredmet.length; i++) {
@@ -560,7 +583,9 @@ for (let i = 0; i < delPredmet.length; i++) {
         let idCell = this.closest('tr').getElementsByTagName('td')[0].textContent;
         sendRequest('/Predmety/delPredmetKroku', 'POST', (idCell), (data)=> {
             if (data){
-                window.location.reload(true);
+                window.location.reload();
+            } else {
+                alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
             }
         });
     });
@@ -579,6 +604,7 @@ for (let i = 0; i < editPredmet.length; i++) {
         let idCell = this.closest('tr').getElementsByTagName('td')[0].textContent;
         sendRequest('/Predmety/getInfo', 'POST', (idCell), (result)=> {
             let modal = document.getElementById('addPredmet');
+            let permission = result['user_permissions'];
             if (result['rocnik'].length > 0) {
                 document.querySelector(".rights-selector.add").value = result['rocnik'];
                 document.getElementById('ziaci').style.display = 'block';
@@ -677,10 +703,20 @@ for (let i = 0; i < editPredmet.length; i++) {
             editZadanyAsistentListener = editAsistent(AsistenSelectedIds, result);
             editZadanaUcebnaListener = editUcebna(UcebnaSelectedIds, ucebne);
             editZiaciListener = editZiaci(ZiaciSelectedIds, result);
-            document.getElementById('ZadanyVyucujuci').addEventListener('click', editZadanyVyucujuciListener);
-            document.getElementById('ZadanyAsistent').addEventListener('click', editZadanyAsistentListener);
-            document.getElementById('ZadanaUcebna').addEventListener('click', editZadanaUcebnaListener);
-            document.getElementById('zadanyZiaci').addEventListener('click', editZiaciListener);
+            if (permission.includes(28)) {
+                document.getElementById('ZadanyVyucujuci').addEventListener('click', editZadanyVyucujuciListener);
+            }
+            if (permission.includes(25)) {
+                document.getElementById('ZadanyAsistent').addEventListener('click', editZadanyAsistentListener);
+            }
+            if (permission.includes(29)) {
+                document.getElementById('ZadanaUcebna').addEventListener('click', editZadanaUcebnaListener);
+            }
+            if (permission.includes(27)) {
+                document.getElementById('zadanyZiaci').addEventListener('click', editZiaciListener);
+            }
+            document.getElementsByClassName('rights-selector add')[0].disabled = !permission.includes(26);
+
             document.getElementById('addPredmetSave').onclick = function () {
                 let predmet = document.getElementById('zoznamPredmetovSelect').value;
                 let rocnik = document.querySelector(".rights-selector.add").value;
@@ -691,17 +727,19 @@ for (let i = 0; i < editPredmet.length; i++) {
                     }
                 }
                 sendRequest('/Predmety/updatePredmet', 'POST', ({
-                        predmet: predmet,
-                        vyucujuci: VyucujuciSelectedIds,
-                        asistent: AsistenSelectedIds,
-                        ucebne: UcebnaSelectedIds,
-                        rocnik: rocnik,
-                        ziaci: ZiaciSelectedIds
-                    }), (data) => {
-                        if (data) {
-                            window.location.reload();
-                        }
-                    });
+                    predmet: predmet,
+                    vyucujuci: VyucujuciSelectedIds,
+                    asistent: AsistenSelectedIds,
+                    ucebne: UcebnaSelectedIds,
+                    rocnik: rocnik,
+                    ziaci: ZiaciSelectedIds
+                }), (data) => {
+                    if (data) {
+                        window.location.reload();
+                    } else {
+                        alert('Nemožno upravovať z dôvodu uzatvoreného školského roka');
+                    }
+                });
             };
         });
     });

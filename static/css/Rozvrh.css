@@ -1,9 +1,14 @@
 .rozvrh {
     margin: 0 auto;
-    width: 60%;
     border-collapse: collapse;
 }
 
+.rozvrh #hodiny th, .rozvrh #hodiny td {
+    width: 100px;
+    height: 10px;
+    border: 1px solid black;
+    text-align: center;
+}
 .rozvrh th, .rozvrh td {
     width: 100px;
     height: 100px;
