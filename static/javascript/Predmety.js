@@ -33,6 +33,25 @@ function filterVyucujuci() {
         }
     }
 }
+function searchFunction() {
+    var filter, tr, tdVyucujuci, tdPredmet, i, txtValueName, txtValueId;
+    filter = document.querySelector(".search-input").value.toUpperCase();
+    tr = document.querySelector(".table").getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) {
+        tdPredmet = tr[i].getElementsByTagName("td")[2];
+        tdVyucujuci = tr[i].getElementsByTagName("td")[4];
+        if (tdPredmet || tdVyucujuci) {
+            txtValueId = tdPredmet.textContent || tdPredmet.innerText;
+            txtValueName = tdVyucujuci.textContent || tdVyucujuci.innerText;
+            if (txtValueId.toUpperCase().indexOf(filter) > -1 || txtValueName.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
 function filterPredmetyByRocnik() {
     var rocniky = document.querySelector(".rights-selector").value;
     var tr = document.querySelector(".table").getElementsByTagName("tr");

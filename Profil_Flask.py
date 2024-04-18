@@ -53,15 +53,15 @@ class Profil:
                 upload_folder = 'static/Profilovky'
                 photo_path = os.path.join(upload_folder, str(self.token.getID(session.get("token"))))
                 photo.save(photo_path)
-                return redirect(url_for('profil'))
+                return redirect(url_for('showProfil'))
             else:
-                return redirect(url_for('profil'))
+                return redirect(url_for('showProfil'))
 
     def deletePhoto(self):
         photo = "static/Profilovky/" + str(self.token.getID(session.get("token")))
         if os.path.exists(photo):
             os.remove(photo)
-        return jsonify({'result': True})
+        return jsonify(True)
 
     def ulozUdaje(self):
         db = mysql.connector.connect(**self.adress)

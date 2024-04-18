@@ -100,7 +100,10 @@ class BaseServer:
         password = request.form['password']
         user = self.sql.check_login(username, password)
         if user:
-            session['zvolenyRok'] = self.sql.skolskeRoky()[0][0]
+            try:
+                session['zvolenyRok'] = self.sql.skolskeRoky()[0][0]
+            except:
+                pass
             token = self.token.vytvorToken(user[0])
             session['token'] = token
             temp = self.sql.getChild(user[0])

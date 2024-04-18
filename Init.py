@@ -10,7 +10,7 @@ from Dochadzka_Flask import Dochadzka
 from Oznamenie_Flask import Oznamenie
 
 if __name__ == "__main__":
-    adress = {"host": "localhost", "user": "root", "password": "admin", "database": "pokus"}
+    adress = {"host": "localhost", "user": "root", "password": "admin", "database": "skolskyinformacnysystem"}
     base = BaseServer(adress)
     Zoznamy(base)
     Pozicie(base)
